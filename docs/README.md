@@ -1,2 +1,2 @@
 # UBlock
-It's an Evidence Protection System Using Blockchain Technology.
+It's an Evidence Tamper Protection Using Blockchain Technology.
