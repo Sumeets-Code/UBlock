@@ -8,6 +8,6 @@ const userLoginSchema = new mongoose.Schema({
     contact : {type: String, required: true}
 });
 
-const ldata = mongoose.model('user', userLoginSchema);
+const ldata = mongoose.model('userlogin', userLoginSchema);
 
 export default ldata;

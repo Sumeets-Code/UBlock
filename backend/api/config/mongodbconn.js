@@ -4,7 +4,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // Use environment variable for MongoDB URI
-const uri = process.env.MONGO_URI;
+// const uri = process.env.MONGO_URI;
+const uri = 'mongodb+srv://sumeetbhagat469:sumeetbhagat469@cluster0.0dqqd.mongodb.net/loginDetails';
 
 const connectDB = async () => {
   try {
