@@ -1,6 +1,6 @@
 import IPFS from 'ipfs-core';
-import { uploadToIPFS } from './upload.mjs';
-import { retrieveFromIPFS } from './retrieve.mjs';
+import { uploadToIPFS } from './upload.js';
+import { retrieveFromIPFS } from './retrieve.js';
 
 let ipfs;
 

@@ -1,4 +1,4 @@
-import { ipfs } from './index.mjs'; // Import the initialized IPFS instance
+import { ipfs } from './index.js'; // Import the initialized IPFS instance
 
 export async function retrieveFromIPFS(cid) {
     const stream = ipfs.cat(cid); // Retrieve the file stream from IPFS
