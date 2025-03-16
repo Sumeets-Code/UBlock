@@ -1,5 +1,4 @@
 import express from 'express';
-import { uploadToIPFS, retrieveFromIPFS } from '../../ipfs_services/index.js';
 import evidence from '../models/evidence_model.js';
 const router = express.Router();
 
@@ -16,8 +15,11 @@ router.post('/add', async (req, res) => {
     
     const eviData = {
         name: req.body.name,
-        hash: req.body.hashedFile,
+        uploaderAddress: req.body.uploaderAddress,
+        timestamp: req.body.timestamp,
+        ipfsHash: req.body.hashedFile,
         fileType: req.body.fileType,
+        discription: req.body.discription,
     }
 
     try{
@@ -38,18 +40,5 @@ router.post('/newCase', async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 })
-
-
-// Endpoint to upload evidence
-router.post('/upload', async (req, res) => {
-    const result = await uploadToIPFS(req.body.file);
-    res.json(result);
-});
-
-// Endpoint to retrieve evidence
-router.get('/retrieve/:hash', async (req, res) => {
-    const file = await retrieveFromIPFS(req.params.hash);
-    res.send(file);
-});
 
 export default router;

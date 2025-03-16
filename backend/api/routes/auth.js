@@ -48,7 +48,7 @@ router.post("/signin", async (req, res) => {
                     res.redirect("/admin", {
                         data1: user.name
                     });
-                } else if (user.role === "forensic offier"){
+                } else if (user.role === "forensic officer"){
                     res.redirect("/forensic", {
                         data1: user.name
                     });
