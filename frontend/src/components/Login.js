@@ -3,6 +3,18 @@ import { Link } from 'react-router-dom';
 import './Login.css';
 
 const Login = () => {
+
+  function handleLogin() {
+    fetch('/signin')
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+      if (data.success) {
+        window.location.href = '/';
+      }
+    })
+  }
+    
   return (
     <div>
       <header>
@@ -25,7 +37,7 @@ const Login = () => {
             <label htmlFor="password">Password</label>
             <input type="password" id="password" name="password" required />
 
-            <button type="submit" className="btn">Login</button>
+            <button type="submit" className="btn" onClick={handleLogin}>Login</button>
             <p className="signup-link">Don't have an account? <Link to="/registration">Sign up</Link></p>
           </form>
         </div>

@@ -1,6 +1,6 @@
 import { ipfs } from './index.js'; // Import the initialized IPFS instance
 
-export async function retrieveFromIPFS(cid) {
+export async function retrieveFromIPFS(cid) {  // CID is the identifier of the file on IPFS (ipfsHash) 
     const stream = ipfs.cat(cid); // Retrieve the file stream from IPFS
     let data = '';
 

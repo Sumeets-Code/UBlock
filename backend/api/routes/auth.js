@@ -1,5 +1,6 @@
 import express from 'express';
 import ldata from '../models/user_model.js';
+import sendEmail from '../../email_service/sendemail.js';
 import argon2 from 'argon2';     // argon2 is a password hashing library
 const router = express.Router();
 
@@ -8,19 +9,21 @@ router.get('/', (req, res) => {
 })
 
 router.post('/signup', async (req, res) => {
-    const hashedpassword = argon2.hash(req.body.password);
+    const hashedpassword = await argon2.hash(req.body.password);
 
     const data = {
-        "username": req.body.username,
-        "password": hashedpassword,
-        "email": req.body.email,
-        "role": req.body.role,
-        "contact": req.body.contact
+        username: req.body.username,
+        password: hashedpassword,
+        email: req.body.email,
+        role: req.body.role,
+        contact: req.body.contact
     }
         
     try{
         await ldata.insertMany([data]);
+        await sendEmail(data.email, 'Welcome!', 'Thank you for registering with UBLock!!');  // (to, subject, text)
         res.redirect("/login").send("User created successfully");
+        res.send("User created successfully");
     } catch (err) {
         console.error("Error inserting data: ", err);
         res.status(500).send("Internal Server Error");
@@ -29,15 +32,12 @@ router.post('/signup', async (req, res) => {
 
 router.post("/signin", async (req, res) => {
     try {
-        // Find the user by email
         const user = await ldata.findOne({ email: req.body.email });
 
-        // Check if the user exists
         if (!user) {
             return res.status(404).send("User not found. Please do Signup With us");
         }
 
-        // Comparing the provided password with the hashed password
         if(user) {
             const isMatch = await argon2.verify(req.body.password, user.password);
             if (isMatch) {

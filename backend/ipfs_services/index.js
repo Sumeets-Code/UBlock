@@ -6,6 +6,7 @@ let ipfs;
 
 async function initIPFS() {
     ipfs = await IPFS.create();
+    console.log('IPFS initialized');
 }
 
 initIPFS().catch(err => {

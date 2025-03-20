@@ -3,6 +3,14 @@ import { Link } from 'react-router-dom';
 import './Regist.css';
 
 const Regist = () => {
+
+  function handleRegister() {
+    fetch('/signup', {method: 'POST'})
+    .catch((err) => {
+      console.error(`Error Fetching the api: ${err.message}`);
+    });
+  }
+
   return (
     <div>
       <header>
@@ -18,7 +26,7 @@ const Regist = () => {
       <section className="register-container">
         <div className="register-box">
           <h2>Create an Account</h2>
-          <form action="#" method="POST">
+          <form action="/signup" method="POST">
             <label htmlFor="fullname">Full Name</label>
             <input type="text" id="fullname" name="fullname" required />
 
@@ -38,7 +46,7 @@ const Regist = () => {
               <option value="police">Police</option>
             </select>
 
-            <button type="submit" className="btn">Register</button>
+            <button type="submit" className="btn" onClick={handleRegister}>Register</button>
             <p className="login-link">Already have an account? <Link to="/login">Login</Link></p> {/* React Router Link */}
           </form>
         </div>

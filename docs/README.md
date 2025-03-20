@@ -3,14 +3,16 @@ It's an Evidence Tamper Protection and Management Project. Build Using Blockchai
 
 In order to run this code, you need to install the required packages. You can install them by running the following command:
 ```shell
-#!/bin/bash
 npm install
 ```
 
 To run the code, you can use the following command:
+Go to the root directory of the project and run the following command:
 ```shell
 cd UBlock/frontend
-
+```
+To Start the Project:
+```shell
 npm run dev
 ```
 
