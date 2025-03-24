@@ -5,7 +5,9 @@ import './Regist.css';
 const Regist = () => {
 
   function handleRegister() {
-    fetch('/signup', {method: 'POST'})
+    fetch('/signup', {
+      method: 'POST'
+    })
     .catch((err) => {
       console.error(`Error Fetching the api: ${err.message}`);
     });

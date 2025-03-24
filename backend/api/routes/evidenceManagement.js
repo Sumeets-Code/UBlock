@@ -1,35 +1,68 @@
 import express from 'express';
+import multer from 'multer';
+import { uploadToIPFS, retrieveFromIPFS } from '../../ipfs_services/index.js';
 import evidence from '../models/evidence_model.js';
 const router = express.Router();
 
-router.get('/getEvidence', async (req, res) => {
+const upload = multer();
+
+router.post('/upload', upload.single('file') ,async (req, res) => {
+  
     try {
-        await evidence.findOne({ name: req.query.name });
-        res.json(evidence);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
+        const file = req.file;
+        if (!file) {
+            return res.status(400).json({ error: 'No file uploaded.' });
+        }
+        
+        const result = await uploadToIPFS(file);
+        
+        function byteConverter(bytes) {
+            return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+        }
+
+        const FileSize = byteConverter(file.size);
+        
+        const eviData = {
+            index: req.body.index,
+            name: req.body.name,
+            uploaderAddress: req.body.uploaderAddress,
+            timestamp: req.body.timestamp,
+            ipfsHash: result.cid,
+            fileType: file.mimetype,
+            discription: req.body.discription,
+            fileSize: FileSize,
+        }
+        
+        try{
+            await evidence.insertOne(eviData);
+            // res.redirect('/evidence').send(alert("Evidence Uploaded"));
+            res.status(201).json({ message: 'Evidence uploaded successfully.' });
+        } catch(err) {
+            console.error("Error inserting evidence: ", err);
+            res.status(500).json({ message: err.message });
+        }
+
+    } catch (error) {
+        console.error('Error uploading to IPFS:', error);
+        res.status(500).json({ error: 'Failed to upload to IPFS.' });
     }
+    
+    
 })
 
-router.post('/addEvidence', async (req, res) => {
+router.get('/evidence', async (req, res) => {
+    const evidenceId = req.query.index;
+    try {
+        const evi = await evidence.findOne({ index: evidenceId });
 
-    const hashedFile = await hashFile(req.body.file);
-    
-    const eviData = {
-        name: req.body.name,
-        uploaderAddress: req.body.uploaderAddress,
-        timestamp: req.body.timestamp,
-        ipfsHash: hashedFile,
-        fileType: req.body.fileType,
-        discription: req.body.discription,
-    }
 
-    try{
-        const newEvi = await evidence.insertOne(eviData);
-        res.redirect('/evidence').send(alert("Evidence Uploaded"));
-
-    } catch(err) {
-        console.error("Error inserting evidence: ", err);
+        if (evi) {
+            // res.json(evi);                                          // Use for testing
+            await retrieveFromIPFS(evi.ipfsHash, ".png");
+        } else {
+            res.status(404).json({ error: 'Evidence not found' });
+        }
+    } catch (err) {
         res.status(500).json({ message: err.message });
     }
 })
