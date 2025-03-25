@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const evidenceSchema = new mongoose.Schema({
     index : {type: String, required: true, unique: true },
-    name : {type: String},
+    name : {type: String, required: true },
     uploaderAddress : {type: String},
     timestamp : {type: String},
     ipfsHash : {type: String, required: true},
