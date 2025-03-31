@@ -38,6 +38,7 @@ router.post('/upload', upload.single('file') ,async (req, res) => {
         
         try{
             await evidence.insertOne(eviData);
+            // res.redirect('/evidence').send(alert("Evidence Uploaded"));
             res.status(201).json({ message: 'Evidence uploaded successfully.' });
         } catch(err) {
             console.error("Error inserting evidence: ", err);
@@ -56,6 +57,7 @@ router.get('/evidence', async (req, res) => {
         const evi = await evidence.findOne({ index: evidenceId });
 
         if (evi) {
+            // res.json(evi);                                          // Use for testing
             await retrieveFromIPFS(evi.ipfsHash, evi.fileType);
             res.status(200).json({ message: 'Evidence retrieved successfully.' });
         } else {
