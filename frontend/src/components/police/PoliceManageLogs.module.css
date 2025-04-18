@@ -1,0 +1,200 @@
+/* General container styling */
+.container {
+    background-color: #121212;
+    color: #b0b0b0;
+    font-family: 'Courier New', monospace;
+    min-height: 100vh;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+/* Header styling */
+.header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+h1 {
+    font-size: 3rem;
+    color: #00ff00;
+    text-shadow: 0 0 5px rgba(0, 255, 0, 0.7), 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+/* Logs Section Styling */
+.logsSection {
+    width: 100%;
+    max-width: 800px;
+}
+
+/* Styling for the textarea to add new logs */
+.addLogContainer {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
+}
+
+.textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #00ff00;
+    background-color: #1e1e1e;
+    color: #b0b0b0;
+    resize: none;
+    min-height: 120px;
+}
+
+/* Buttons for Add Log */
+.addLogBtn {
+    background-color: #32cd32;
+    /* Updated color */
+    color: #121212;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.addLogBtn:hover {
+    background-color: #228b22;
+}
+
+/* Logs List Container */
+.logsListContainer {
+    width: 100%;
+    max-width: 800px;
+}
+
+/* Logs list styling */
+.logsList {
+    list-style-type: none;
+    padding: 0;
+}
+
+/* Individual log item styling */
+.logItem {
+    background-color: #1e1e1e;
+    margin: 10px 0;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Log details and actions */
+.logDetails {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.logMessage {
+    font-size: 1.2rem;
+    color: #00ff00;
+    margin-right: 20px;
+}
+
+.logDate,
+.logTimestamp {
+    font-size: 0.9rem;
+    color: #b0b0b0;
+}
+
+.logTimestamp {
+    font-style: italic;
+}
+
+/* Actions buttons styling */
+.logActions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* Action Buttons */
+.viewLogBtn,
+.editLogBtn,
+.deleteLogBtn {
+    padding: 8px 16px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.viewLogBtn {
+    background-color: #1e90ff;
+    /* View button color */
+}
+
+.editLogBtn {
+    background-color: #ff8c00;
+    /* Edit button color */
+}
+
+.deleteLogBtn {
+    background-color: #dc143c;
+    /* Delete button color */
+}
+
+.viewLogBtn:hover {
+    background-color: #4682b4;
+}
+
+.editLogBtn:hover {
+    background-color: #ff4500;
+}
+
+.deleteLogBtn:hover {
+    background-color: #b22222;
+}
+
+/* Edit log styling */
+.editLogContainer {
+    background-color: #1e1e1e;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+}
+
+.saveEditBtn {
+    background-color: #32cd32;
+    /* Updated color */
+    color: #121212;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+}
+
+.saveEditBtn:hover {
+    background-color: #228b22;
+}
+
+/* Footer styling */
+.footer {
+    text-align: center;
+    margin-top: 40px;
+    color: #00ff00;
+    font-size: 0.9rem;
+}

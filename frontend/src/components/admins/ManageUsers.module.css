@@ -1,0 +1,68 @@
+/* ManageUsers.module.css */
+.container {
+    background-color: #0b0b0b;
+    color: #00ff00;
+    font-family: 'Courier New', monospace;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    background-color: #121212;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 2px solid #00ff00;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 2rem;
+    color: #00ff00;
+}
+
+.header a {
+    color: #00ff00;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.main {
+    padding: 30px;
+    flex: 1;
+}
+
+.userCard {
+    background-color: #1c1c1c;
+    border: 1px solid #00ff00;
+    padding: 16px 20px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.userCard button {
+    background-color: #00ff00;
+    color: #121212;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.userCard button:hover {
+    transform: scale(1.05);
+}
+
+.footer {
+    background-color: #121212;
+    color: #00ff00;
+    text-align: center;
+    padding: 15px;
+    border-top: 2px solid #00ff00;
+}
