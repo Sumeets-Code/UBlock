@@ -128,7 +128,10 @@ dist
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
 
+# Personal Files that are not to be included in the github
 docs/architecture.md
+tests
+# backend/api/Downloads
 
 # yarn v2
 .yarn/cache

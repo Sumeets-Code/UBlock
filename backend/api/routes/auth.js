@@ -1,75 +1,96 @@
 import express from 'express';
 import ldata from '../models/user_model.js';
 import sendEmail from '../../email_service/sendemail.js';
-import argon2 from 'argon2';     // argon2 is a password hashing library
+import argon2 from 'argon2';
+
 const router = express.Router();
 
-router.get('/', (req, res) => {
-    res.send('Hello World!');
-})
-
+// Signup Route
 router.post('/signup', async (req, res) => {
-    const hashedpassword = await argon2.hash(req.body.password);
+    try {
+        const existing = await ldata.findOne({ email: req.body.email });
+        if (existing) {
+            return res.status(409).json({ message: "User already exists" });
+        }
 
-    const data = {
-        username: req.body.username,
-        password: hashedpassword,
-        email: req.body.email,
-        role: req.body.role,
-        contact: req.body.contact
-    }
-        
-    try{
-        await ldata.insertMany([data]);
-        await sendEmail(data.email, 'Welcome!', 'Thank you for registering with UBLock!!');  // (to, subject, text)
-        res.redirect("/login").send("User created successfully");
-        res.send("User created successfully");
+        const hashedPassword = await argon2.hash(req.body.password);
+
+        const data = {
+            username: req.body.username,
+            password: hashedPassword,
+            email: req.body.email,
+            role: req.body.role,
+            contact: req.body.contact
+        };
+
+        await ldata.create(data);
+        await sendEmail(data.email, `Welcome! ${data.username}`, `Thank you for registering with UBLock!!`);
+
+        return res.status(201).json({ message: "User registered successfully" });
+
     } catch (err) {
-        console.error("Error inserting data: ", err);
-        res.status(500).send("Internal Server Error");
+        console.error("Error during signup: ", err);
+        res.status(500).json({ message: "Internal Server Error" });
     }
-})
+});
 
+/// Signin Route (Role-Based Redirection Info)
 router.post("/signin", async (req, res) => {
     try {
         const user = await ldata.findOne({ email: req.body.email });
 
         if (!user) {
-            return res.status(404).send("User not found. Please do Signup With us");
+            return res.status(404).json({ message: "User not found" });
         }
 
-        if(user) {
-            const isMatch = await argon2.verify(req.body.password, user.password);
-            if (isMatch) {
-                res.send(alert("Login Successfull"));
-
-                // Depending upon the Role it login to the respective page
-                if (user.role === "admin"){
-                    res.redirect("/admin", {
-                        data1: user.name
-                    });
-                } else if (user.role === "forensic officer"){
-                    res.redirect("/forensic", {
-                        data1: user.name
-                    });
-                } else if (user.role === "police officer"){
-                    res.redirect("/police", {
-                        data1: user.name
-                    });
-                } else if (user.role === "jury"){
-                    res.redirect("/jury", {
-                        data1: user.name
-                    });
-                }    
-
-            } else {
-                res.status(406).send("Wrong Password");
-            }
+        const isMatch = await argon2.verify(user.password, req.body.password);
+        if (!isMatch) {
+            return res.status(401).json({ message: "Incorrect password" });
         }
+
+        // Send full user data
+        return res.status(200).json({
+            message: "Login successful",
+            role: user.role,
+            username: user.username,
+            email: user.email,
+            contact: user.contact
+        });
 
     } catch (error) {
+        console.error("Login error:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+});
+
+router.post('/update', async (req, res) => {
+    const data = req.body;
+
+    try {
+        const user = await ldata.findOne({ email: data.email });
+
+        // Check if user exists
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        await ldata.updateOne(
+            { email: user.email },
+            { $set : {
+                username: data.name,
+                contact: data.phone,
+                rank: data.rank,
+                department: data.department,
+                employeeId:data.employeeId,
+            }}
+        )
+
+        
+
+        res.status(200).json({ message: 'User updated successfully', user });
+    } catch (error) {
         console.error(error);
-        res.status(500).send("Internal Server Error");
+        res.status(500).json({ message: 'Server error', error });
     }
 });
 

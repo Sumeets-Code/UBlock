@@ -3,9 +3,13 @@ import multer from 'multer';
 import { uploadToIPFS, retrieveFromIPFS } from '../../ipfs_services/index.js';
 import evidence from '../models/evidence_model.js';
 import path from 'path';
+// import web3 from 'web3';
+// import contract from '../server.js'
+
 const router = express.Router();
 
 const upload = multer();
+// const upload = multer({ dest: 'uploads/' }); // Temporary storage for uploaded files
 
 router.post('/upload', upload.single('file') ,async (req, res) => {
   
@@ -38,7 +42,10 @@ router.post('/upload', upload.single('file') ,async (req, res) => {
         
         try{
             await evidence.insertOne(eviData);
-            // res.redirect('/evidence').send(alert("Evidence Uploaded"));
+            // const accounts = await web3.eth.getAccounts();
+            // const uploader = accounts[0]; // Get the first account
+
+            // await contract.methods.registerEvidence(result.cid, fileExtension).send({ from: uploader });
             res.status(201).json({ message: 'Evidence uploaded successfully.' });
         } catch(err) {
             console.error("Error inserting evidence: ", err);
@@ -51,7 +58,7 @@ router.post('/upload', upload.single('file') ,async (req, res) => {
     }
 })
 
-router.get('/evidence', async (req, res) => {
+router.get('/retrieve', async (req, res) => {
     const evidenceId = req.query.index;
     try {
         const evi = await evidence.findOne({ index: evidenceId });

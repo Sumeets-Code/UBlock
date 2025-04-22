@@ -1,8 +1,10 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import styles from "./Admin.module.css";
 
 const AdminPanel = () => {
+    const location = useLocation();
+    const { username, email, contact } = location.state || {};
     return (
         <div className={styles.adminPanel}>
             <header className={styles.header}>

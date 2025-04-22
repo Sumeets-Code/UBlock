@@ -7,6 +7,7 @@ import ThreeDModel from './ThreeDModel'; // Import the 3D model component
 import './UBlock.css';
 
 const UBlock = () => {
+    
     return (
         <ParallaxProvider>
             {/* Glitch Background */}
@@ -27,7 +28,7 @@ const UBlock = () => {
                         <p className="ublock-description">
                             Secure, immutable, and decentralized evidence management for a transparent future.
                         </p>
-                        <Link to="/registration">
+                        <Link to="/login">
                             <button className="ublock-button">Get Started</button>
                         </Link>
                     </div>

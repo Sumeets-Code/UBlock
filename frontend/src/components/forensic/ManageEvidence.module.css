@@ -1,119 +1,159 @@
 /* Main container */
 .container {
-    background-color: #0b0b0b;
-    color: #00ff00;
-    font-family: 'Courier New', monospace;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+  background-color: #0b0b0b;
+  color: #00ff00;
+  font-family: "Courier New", monospace;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Header section */
 .header {
-    background-color: #121212;
-    padding: 20px;
-    text-align: center;
-    border-bottom: 2px solid #00ff00;
+  background-color: #121212;
+  padding: 20px;
+  text-align: center;
+  border-bottom: 2px solid #00ff00;
 }
 
 .header h1 {
-    color: #00ff00;
-    font-size: 2rem;
-    margin: 0;
+  color: #00ff00;
+  font-size: 2rem;
+  margin: 0;
 }
 
 /* Main content */
 .main {
-    padding: 30px;
-    flex: 1;
+  padding: 30px;
+  flex: 1;
 }
 
 /* Form to add new evidence */
 .form {
-    display: flex;
-    margin-bottom: 20px;
-    gap: 10px;
-    flex-wrap: wrap;
+  display: flex;
+  margin-bottom: 20px;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .input,
 .editInput {
-    background-color: #1c1c1c;
-    color: #00ff00;
-    border: 1px solid #00ff00;
-    padding: 8px;
-    font-family: 'Courier New', monospace;
-    flex: 1;
-    outline: none;
-    transition: border 0.3s;
+  background-color: #1c1c1c;
+  color: #00ff00;
+  border: 1px solid #00ff00;
+  padding: 8px;
+  font-family: "Courier New", monospace;
+  flex: 1;
+  outline: none;
+  transition: border 0.3s;
 }
 
 .input:focus,
 .editInput:focus {
-    border-color: #39ff14;
+  border-color: #39ff14;
 }
 
 /* Buttons */
 .button,
-.actionBtn {
-    background-color: #0b0b0b;
-    color: #00ff00;
-    border: 1px solid #00ff00;
-    padding: 8px 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-family: 'Courier New', monospace;
-    font-size: 0.9rem;
+.actionBtn,
+.uploadButton {
+  background-color: #0b0b0b;
+  color: #00ff00;
+  border: 1px solid #00ff00;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: "Courier New", monospace;
+  font-size: 0.9rem;
 }
 
 .button:hover,
-.actionBtn:hover {
-    background-color: #00ff00;
-    color: #0b0b0b;
+.actionBtn:hover,
+.uploadButton:hover {
+  background-color: #00ff00;
+  color: #0b0b0b;
 }
 
 /* Evidence table */
 .table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
 }
 
 .table th,
 .table td {
-    border: 1px solid #00ff00;
-    padding: 10px;
-    text-align: left;
+  border: 1px solid #00ff00;
+  padding: 10px;
+  text-align: left;
 }
 
 .table th {
-    background-color: #121212;
-    color: #00ff00;
-    font-size: 1.1rem;
+  background-color: #121212;
+  color: #00ff00;
+  font-size: 1.1rem;
 }
 
 .table tr:nth-child(even) {
-    background-color: #1c1c1c;
+  background-color: #1c1c1c;
 }
 
 .table tr:hover {
-    background-color: #222;
-    transition: background-color 0.2s;
+  background-color: #222;
+  transition: background-color 0.2s;
 }
 
 /* Action buttons layout */
 .actions {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 /* Footer section */
 .footer {
-    background-color: #121212;
-    color: #00ff00;
-    text-align: center;
-    padding: 15px;
-    border-top: 2px solid #00ff00;
-    font-size: 0.9rem;
+  background-color: #121212;
+  color: #00ff00;
+  text-align: center;
+  padding: 15px;
+  border-top: 2px solid #00ff00;
+  font-size: 0.9rem;
+}
+
+/* File upload section */
+.uploadSection {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.uploadInput {
+  background-color: #1c1c1c;
+  color: #00ff00;
+  border: 1px solid #00ff00;
+  padding: 8px;
+  font-family: "Courier New", monospace;
+  flex: 1;
+  outline: none;
+  transition: border 0.3s;
+}
+
+.uploadInput:focus {
+  border-color: #39ff14;
+}
+
+.uploadButton {
+  background-color: #0b0b0b;
+  color: #00ff00;
+  border: 1px solid #00ff00;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: "Courier New", monospace;
+  font-size: 0.9rem;
+}
+
+.uploadButton:hover {
+  background-color: #00ff00;
+  color: #0b0b0b;
 }

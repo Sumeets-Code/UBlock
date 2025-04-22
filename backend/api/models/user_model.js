@@ -5,7 +5,10 @@ const userLoginSchema = new mongoose.Schema({
     password: {type: String, required: true},
     email: {type: String, required: true, unique: true},
     role: {type: String, required: true},
-    contact : {type: String, required: true}
+    contact : {type: Number, required: true},
+    rank: {type: String},
+    department: {type: String},
+    employeeId: {type: String}
 });
 
 const ldata = mongoose.model('userlogin', userLoginSchema);
