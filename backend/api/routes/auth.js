@@ -87,24 +87,4 @@ router.post('/update', async (req, res) => {
     }
 });
 
-router.get('/getLogs', async (req, res) => {
-    try {
-        const logs = await fetchLogs(req);
-        
-        res.status(200).json({
-            success: true,
-            evidenceId: req.query.evidenceId,
-            accessLogs: logs,
-            totalViews: logs.length
-        });
-    } catch (error) {
-        console.error('Error fetching access logs:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Failed to retrieve evidence access logs',
-            error: error.message
-        });
-    }
-});
-
 export default router;
