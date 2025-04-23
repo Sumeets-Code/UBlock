@@ -26,7 +26,7 @@ const Login = () => {
         deparment,
         rank,
         e_id,
-        dateOfJoining,
+        dateOfJoining
       } = response.data;
 
       const user = {
@@ -40,16 +40,16 @@ const Login = () => {
         dateOfJoining,
       };
 
-      localStorage.setItem("user", JSON.stringify(user));
-
+      // Navigate based on role
       if (["admin", "forensic", "police", "staff"].includes(role)) {
-        navigate(`/${role}`);
+        navigate(`/${role}`, { state: user });
       } else {
         alert("Unknown role: " + role);
       }
+
     } catch (error) {
       console.error("Login failed:", error);
-      if (error.response?.data?.message) {
+      if (error.response && error.response.data && error.response.data.message) {
         alert(error.response.data.message);
       } else {
         alert("Login failed. Please try again.");
