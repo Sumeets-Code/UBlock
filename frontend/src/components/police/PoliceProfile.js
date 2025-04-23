@@ -10,28 +10,19 @@ const PoliceProfile = () => {
   const location = useLocation(); // ✅ moved to top-level
 
   useEffect(() => {
-    const { username, email, contact } = location.state || {};
+    const { username, email, contact, rank, department, employeeid, dateOfJoining } = location.state || {};
 
     const fetchProfile = async () => {
       try {
-        // Simulated API call using axios
-        const response = await axios.get(
-          "https://api.example.com/police/profile",
-          {
-            params: { username, email, contact },
-          }
-        );
-
         // Mocked response data if using axios
-        const mockData = response.data || {
+        const mockData = {
           name: "Inspector " + (username || "Unknown"),
           email: email || "unknown@example.com",
           phone: contact || "0000000000",
-          rank: "Inspector",
-          department: "Delhi Police, Crime Branch",
-          badgeNumber: "DL-CB-1122",
-          address: "45 Police Lines, Civil Lines, Delhi, India",
-          dateOfJoining: "20 June 2015",
+          rank: rank || "Inspector",
+          department: department || "Delhi Police, Crime Branch",
+          badgeNumber: employeeid|| "DL-CB-1122",
+          dateOfJoining: dateOfJoining || "20 June 2015",
           profilePic: null,
         };
 
@@ -46,7 +37,6 @@ const PoliceProfile = () => {
           rank: "Inspector",
           department: "Delhi Police, Crime Branch",
           badgeNumber: "DL-CB-1122",
-          address: "45 Police Lines, Civil Lines, Delhi, India",
           dateOfJoining: "20 June 2015",
           profilePic: null,
         });
@@ -117,9 +107,6 @@ const PoliceProfile = () => {
           </p>
           <p>
             <strong>Badge Number:</strong> {profile.badgeNumber}
-          </p>
-          <p>
-            <strong>Address:</strong> {profile.address}
           </p>
           <p>
             <strong>Date of Joining:</strong> {profile.dateOfJoining}

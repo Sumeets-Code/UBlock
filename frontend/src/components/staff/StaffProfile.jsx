@@ -9,18 +9,16 @@ const StaffProfile = () => {
   const location = useLocation(); // ✅ Hook used at top-level
 
   useEffect(() => {
-    const { username, email, contact } = location.state || {};
-
+    const { username, email, contact, rank, department, employeeid, dateOfJoining } = location.state || {};
     const fetchProfile = async () => {
       const mockData = {
         name: username,
         email: email,
         phone: contact,
-        position: "Support Staff",
-        department: "Forensic Operations",
-        employeeId: "STF-1023",
-        address: "456 Main Street, Sector 12, New Delhi, India",
-        dateOfJoining: "15 March 2021",
+        position: rank || "Support Staff",
+        department: department || "Forensic Operations",
+        employeeId: employeeid|| "STF-1023",
+        dateOfJoining: dateOfJoining || "15 March 2021",
         profilePic: null,
       };
       setProfile(mockData);
@@ -90,9 +88,6 @@ const StaffProfile = () => {
           </p>
           <p>
             <strong>Employee ID:</strong> {profile.employeeId}
-          </p>
-          <p>
-            <strong>Address:</strong> {profile.address}
           </p>
           <p>
             <strong>Date of Joining:</strong> {profile.dateOfJoining}

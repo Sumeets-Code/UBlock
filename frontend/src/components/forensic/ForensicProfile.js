@@ -11,7 +11,7 @@ const ForensicProfile = () => {
 
   useEffect(() => {
     // Get state passed from login (if any)
-    const { username, email, contact, rank, department, e_id, dateOfJoining } = location.state || {};
+    const { username, email, contact, rank, department, employeeid, dateOfJoining } = location.state || {};
 
     const fetchProfile = async () => {
       // You can replace this mock with an API call later
@@ -21,7 +21,7 @@ const ForensicProfile = () => {
         phone: contact || "0000000000",
         rank: rank || "Unknown",
         department: department || "Unknown",
-        employeeId: e_id || "Unknown",
+        employeeId: employeeid || "Unknown",
         dateOfJoining: dateOfJoining || "Unknown",
         profilePic: null,
       };
@@ -92,9 +92,6 @@ const ForensicProfile = () => {
           </p>
           <p>
             <strong>Employee ID:</strong> {profile.employeeId}
-          </p>
-          <p>
-            <strong>Address:</strong> {profile.address}
           </p>
           <p>
             <strong>Date of Joining:</strong> {profile.dateOfJoining}

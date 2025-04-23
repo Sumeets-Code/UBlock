@@ -25,18 +25,20 @@ const Login = () => {
         contact,
         deparment,
         rank,
-        e_id,
+        employeeid,
         dateOfJoining
       } = response.data;
 
+      const cleanRole = role?.toLowerCase(); // Normalize role
+      
       const user = {
-        role,
+        role: cleanRole,
         username,
         email: resEmail || email,
         contact: contact || "",
         rank,
         deparment,
-        e_id,
+        employeeid,
         dateOfJoining,
       };
 

@@ -87,36 +87,37 @@ router.post('/upload', upload.single('file'), async (req, res) => {
       });
     }
 //     // 
-//     try {
-//       // Register on blockchain if needed
-//       if (req.body.registerOnBlockchain) {
-//         const contract = await getEvidenceContract();
-//         const transaction = await contract.methods
-//           .registerEvidence(result.cid, fileExtension)
-//           .send({ 
-//             from: req.body.uploaderAddress, 
-//             gas: process.env.GAS_LIMIT || 3000000 
-//           });
+    try {
+      // Register on blockchain if needed
+      if (req.body.registerOnBlockchain) {
+        const contract = await getEvidenceContract();
+        const transaction = await contract.methods
+          .registerEvidence(result.cid, fileExtension)
+          .send({ 
+            from: req.body.uploaderAddress, 
+            gas: process.env.GAS_LIMIT || 3000000 
+          });
         
-//         // Add transaction hash to the evidence data
-//         eviData.transactionHash = transaction.transactionHash;
-//       }
+        // Add transaction hash to the evidence data
+        eviData.transactionHash = transaction.transactionHash;
+      }
       
-//       // Insert into MongoDB
-//       await evidence.create(eviData);
+      // Insert into MongoDB
+      await evidence.create(eviData);
       
-//       res.status(201).json({ 
-//         success: true,
-//         message: 'Evidence uploaded successfully.',
-//         ipfsHash: result.cid
-//       });
-//     } catch (err) {
-//       console.error("Error inserting evidence: ", err);
-//       res.status(500).json({ 
-//         success: false,
-//         message: err.message 
-//       });
-//     }
+      res.status(201).json({ 
+        success: true,
+        message: 'Evidence uploaded successfully.',
+        ipfsHash: result.cid
+      });
+    } catch (err) {
+      console.error("Error inserting evidence: ", err);
+      res.status(500).json({ 
+        success: false,
+        message: err.message 
+      });
+    }
+// 
   } catch (error) {
     console.error('Error uploading to IPFS:', error);
     res.status(500).json({ 
@@ -154,10 +155,11 @@ router.get('/retrieve', async (req, res) => {
 });
 
 // GET route to fetch all evidence
-router.get('/evidence', async (req, res) => {
+router.get('/viewEvidence', async (req, res) => {
+  const evidenceId = req.query.evidenceId;
   try {
     // Fetch all evidence from MongoDB
-    const evidences = await evidence.find({});
+    const evidences = await evidence.find({index : evidenceId});
     
     res.status(200).json({
       success: true,
@@ -242,6 +244,18 @@ router.get('/getLogs', async (req, res) => {
       message: 'Failed to fetch access logs',
       error: error.message
     });
+  }
+});
+
+router.get('getEvidences', async(req, res) => {
+  try {
+    const evi = await evidence.find();
+    res.json(evi);
+  } catch (err) {
+    res.json({
+      message : 'Error fetching all evidences from the database',
+      error: err.message
+    })
   }
 });
 

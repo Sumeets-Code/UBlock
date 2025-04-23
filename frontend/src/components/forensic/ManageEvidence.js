@@ -81,7 +81,7 @@ function ManageEvidence() {
   useEffect(() => {
     const fetchEvidenceItems = async () => {
       try {
-        const response = await axios.get('http://localhost:3300/evidence');
+        const response = await axios.get('http://localhost:3300/viewEvidence', {evidenceId});
         if (response.data && response.data.success) {
           setEvidenceItems(response.data.evidence);
         }
