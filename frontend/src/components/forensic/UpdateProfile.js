@@ -1,36 +1,50 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"; // Added axios import
+import axios from "axios";
 import styles from "./UpdateProfile.module.css";
 
 const UpdateProfile = () => {
   const navigate = useNavigate();
 
+  const storedUser = JSON.parse(localStorage.getItem("user")) || {};
+
   const [formData, setFormData] = useState({
-    name: document.getElementById('name').value,
-    phone: document.getElementById('phone').value,
-    rank: document.getElementById('rank').value,
-    department: document.getElementById('deparment').value,
-    employeeId:document.getElementById('employeeId').value,
+    name: "",
+    email: "",
+    phone: "",
+    rank: "",
+    department: "",
+    employeeId: "",
   });
+
+  useEffect(() => {
+    setFormData({
+      name: storedUser.username || "",
+      email: storedUser.email || "",
+      phone: storedUser.contact || "",
+      rank: storedUser.rank || "",
+      department: storedUser.deparment || "",
+      employeeId: storedUser.e_id || "",
+    });
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:3300/update",
-        formData
-      ); // Send POST request with form data
-      console.log("Response from server:", response.data);
-      navigate("/forensic"); // Redirect to /forensic after success
+      const response = await axios.post("http://localhost:3300/update", formData);
+      console.log("Profile updated:", response.data);
+      navigate("/forensic");
     } catch (error) {
       console.error("Error updating profile:", error);
-      // Handle any errors here (e.g., show an alert or message)
+      alert("Update failed. Please try again.");
     }
   };
 
@@ -86,10 +100,11 @@ const UpdateProfile = () => {
           required
         />
 
-        <label>EmployeeId:</label>
-        <textarea
+        <label>Employee ID:</label>
+        <input
+          type="text"
           name="employeeId"
-          value={formData.address}
+          value={formData.employeeId}
           onChange={handleChange}
           required
         />
