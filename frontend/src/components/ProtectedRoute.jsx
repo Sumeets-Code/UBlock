@@ -1,14 +1,15 @@
 import React from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
-const ProtectedRoute = ({ role }) => {
-  const user = JSON.parse(localStorage.getItem("user"));
+const ProtectedRoute = ({ children, role }) => {
+  const storedUser = localStorage.getItem("user");
+  const user = storedUser ? JSON.parse(storedUser) : null;
 
-  if (!user || user.role !== role) {
+  if (!user || user.role !== role.toLowerCase()) {
     return <Navigate to="/login" replace />;
   }
 
-  return <Outlet />;
+  return children;
 };
 
 export default ProtectedRoute;
