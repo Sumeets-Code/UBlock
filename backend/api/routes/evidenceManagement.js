@@ -4,7 +4,6 @@ import { uploadToIPFS, retrieveFromIPFS } from '../../ipfs_services/index.js';
 import evidence from '../models/evidence_model.js';
 import path from 'path';
 // import web3 from 'web3';
-// import contract from '../server.js'
 
 const router = express.Router();
 

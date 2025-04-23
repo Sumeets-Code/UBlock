@@ -2,6 +2,7 @@ import express from 'express';
 import ldata from '../models/user_model.js';
 import sendEmail from '../../email_service/sendemail.js';
 import argon2 from 'argon2';
+import { fetchLogs } from '../middleware/helperFunc.js';
 
 const router = express.Router();
 
@@ -34,7 +35,6 @@ router.post('/signup', async (req, res) => {
     }
 });
 
-/// Signin Route (Role-Based Redirection Info)
 router.post("/signin", async (req, res) => {
     try {
         const user = await ldata.findOne({ email: req.body.email });
@@ -49,13 +49,7 @@ router.post("/signin", async (req, res) => {
         }
 
         // Send full user data
-        return res.status(200).json({
-            message: "Login successful",
-            role: user.role,
-            username: user.username,
-            email: user.email,
-            contact: user.contact
-        });
+        return res.status(200).json(user);
 
     } catch (error) {
         console.error("Login error:", error);
@@ -77,6 +71,7 @@ router.post('/update', async (req, res) => {
         await ldata.updateOne(
             { email: user.email },
             { $set : {
+                photo: data.photo,
                 username: data.name,
                 contact: data.phone,
                 rank: data.rank,
@@ -85,8 +80,6 @@ router.post('/update', async (req, res) => {
             }}
         )
 
-        
-
         res.status(200).json({ message: 'User updated successfully', user });
     } catch (error) {
         console.error(error);
@@ -94,5 +87,24 @@ router.post('/update', async (req, res) => {
     }
 });
 
+router.get('/getLogs', async (req, res) => {
+    try {
+        const logs = await fetchLogs(req);
+        
+        res.status(200).json({
+            success: true,
+            evidenceId: req.query.evidenceId,
+            accessLogs: logs,
+            totalViews: logs.length
+        });
+    } catch (error) {
+        console.error('Error fetching access logs:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to retrieve evidence access logs',
+            error: error.message
+        });
+    }
+});
 
 export default router;
