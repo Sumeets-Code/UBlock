@@ -18,31 +18,23 @@ const Login = () => {
         password,
       });
 
-      console.log("Backend response:", response.data);
+      console.log("Backend response:", response.data); // Debug log
 
       const {
         role,
         username,
         email: resEmail,
         contact,
-        department, // Corrected spelling
+        deparment,
         rank,
-        employeeid, // Changed to match localStorage key
+        e_id,
         dateOfJoining
       } = response.data;
-      
-      const cleanRole = role?.toLowerCase();
 
-      const user = {
-        role: cleanRole,
-        username,
-        email: resEmail || email,
-        contact: contact || "",
-        rank,
-        department, // Corrected spelling
-        employeeid,
-        dateOfJoining,
-      };
+      const cleanRole = role ? role.toLowerCase() : "";
+
+      console.log("Raw role from backend:", role);
+      console.log("Normalized role:", cleanRole);
 
       if (["admin", "forensic", "police", "staff"].includes(cleanRole)) {
         // Save to localStorage
@@ -52,19 +44,20 @@ const Login = () => {
           email: resEmail || email,
           contact: contact || "",
           rank,
-          department, // Corrected spelling
-          employeeid, // Fixed variable name
+          deparment,
+          e_id,
           dateOfJoining,
         }));
 
-        // Single navigation call
-        navigate(`/${cleanRole}`, { state: user });
+        console.log("Navigating to:", `/${cleanRole}`);
+        navigate(`/${cleanRole}`);
       } else {
         alert("Unknown role: " + role);
       }
+
     } catch (error) {
       console.error("Login failed:", error);
-      if (error.response?.data?.message) {
+      if (error.response && error.response.data && error.response.data.message) {
         alert(error.response.data.message);
       } else {
         alert("Login failed. Please try again.");
@@ -85,6 +78,7 @@ const Login = () => {
           <input
             type="email"
             id="email"
+            name="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -94,6 +88,7 @@ const Login = () => {
           <input
             type="password"
             id="password"
+            name="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -102,7 +97,6 @@ const Login = () => {
           <button type="submit" className="btn">
             Login
           </button>
-
           <p className="signup-link">
             Don't have an account? <Link to="/registration">Sign up</Link>
           </p>
