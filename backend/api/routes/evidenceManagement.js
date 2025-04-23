@@ -10,21 +10,22 @@ dotenv.config();
 
 const router = express.Router();
 
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const uploadDir = path.join(__dirname, '../uploads');
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-    cb(null, uploadDir);
-  },
-  filename: function (req, file, cb) {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  }
-});
+// // Configure multer for file uploads
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     const uploadDir = path.join(__dirname, '../uploads');
+//     if (!fs.existsSync(uploadDir)) {
+//       fs.mkdirSync(uploadDir, { recursive: true });
+//     }
+//     cb(null, uploadDir);
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, `${Date.now()}-${file.originalname}`);
+//   }
+// });
 
-const upload = multer({ storage: storage });
+// const upload = multer({ storage: storage });
+const upload = multer();
 
 // POST route to upload evidence
 router.post('/upload', upload.single('file'), async (req, res) => {
@@ -46,39 +47,47 @@ router.post('/upload', upload.single('file'), async (req, res) => {
 
     const FileSize = byteConverter(file.size);
     
+    // const eviData = {
+    //   index: req.body.index,
+    //   name: req.body.name,
+    //   uploaderAddress: req.body.uploaderAddress,
+    //   timestamp: req.body.timestamp || new Date().toISOString().replace('T', ' ').slice(0, 19),
+    //   ipfsHash: result.cid,
+    //   fileType: fileExtension,
+    //   discription: req.body.discription,
+    //   fileSize: FileSize,
+    // };
+    
+    // Corrected eviData and removed registerOnBlockchain condition
     const eviData = {
-      index: req.body.index,
-      name: req.body.name,
-      uploaderAddress: req.body.uploaderAddress,
+      index: req.body.evidenceId,
+      uploaderAddress: req.body.walletAddress,
       timestamp: req.body.timestamp || new Date().toISOString().replace('T', ' ').slice(0, 19),
       ipfsHash: result.cid,
-      fileType: fileExtension,
-      discription: req.body.discription,
+      fileType: req.body.fileType,
+      description: req.body.description, // Corrected typo
       fileSize: FileSize,
     };
-    
+
     try {
-      // Register on blockchain if needed
-      if (req.body.registerOnBlockchain) {
-        const contract = await getEvidenceContract();
-        const transaction = await contract.methods
-          .registerEvidence(result.cid, fileExtension)
-          .send({ 
-            from: req.body.uploaderAddress, 
-            gas: process.env.GAS_LIMIT || 3000000 
-          });
-        
-        // Add transaction hash to the evidence data
-        eviData.transactionHash = transaction.transactionHash;
-      }
+      // Always register on blockchain
+      const contract = await getEvidenceContract();
+      const transaction = await contract.methods
+        .registerEvidence(result.cid, fileExtension)
+        .send({ 
+          from: req.body.walletAddress, 
+          gas: process.env.GAS_LIMIT || 3000000 
+        });
       
-      // Insert into MongoDB
+      eviData.transactionHash = transaction.transactionHash;
+      
       await evidence.create(eviData);
       
       res.status(201).json({ 
         success: true,
         message: 'Evidence uploaded successfully.',
-        ipfsHash: result.cid
+        ipfsHash: result.cid,
+        transactionHash: transaction.transactionHash // Include in response
       });
     } catch (err) {
       console.error("Error inserting evidence: ", err);
@@ -87,6 +96,37 @@ router.post('/upload', upload.single('file'), async (req, res) => {
         message: err.message 
       });
     }
+//     // 
+//     try {
+//       // Register on blockchain if needed
+//       if (req.body.registerOnBlockchain) {
+//         const contract = await getEvidenceContract();
+//         const transaction = await contract.methods
+//           .registerEvidence(result.cid, fileExtension)
+//           .send({ 
+//             from: req.body.uploaderAddress, 
+//             gas: process.env.GAS_LIMIT || 3000000 
+//           });
+        
+//         // Add transaction hash to the evidence data
+//         eviData.transactionHash = transaction.transactionHash;
+//       }
+      
+//       // Insert into MongoDB
+//       await evidence.create(eviData);
+      
+//       res.status(201).json({ 
+//         success: true,
+//         message: 'Evidence uploaded successfully.',
+//         ipfsHash: result.cid
+//       });
+//     } catch (err) {
+//       console.error("Error inserting evidence: ", err);
+//       res.status(500).json({ 
+//         success: false,
+//         message: err.message 
+//       });
+//     }
   } catch (error) {
     console.error('Error uploading to IPFS:', error);
     res.status(500).json({ 

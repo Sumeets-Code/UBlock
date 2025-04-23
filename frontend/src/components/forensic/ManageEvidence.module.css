@@ -104,7 +104,6 @@
   border-top: 2px solid #00ff00;
 }
 
-/* Popup styles */
 .popupOverlay {
   position: fixed;
   top: 0;
@@ -125,8 +124,10 @@
   padding: 30px;
   text-align: center;
   box-shadow: 0 0 10px #00ff00;
-  max-width: 400px;
+  max-width: 500px;
   width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .popupCard h2 {
@@ -143,21 +144,17 @@
   margin-bottom: 15px;
 }
 
-.previewImage {
-  max-width: 100%;
-  border: 1px solid #00ff00;
-  margin-bottom: 15px;
-  border-radius: 8px;
-}
-
+.previewImage,
 .previewMedia {
+  max-width: 100%;
   width: 100%;
+  height: auto;
   max-height: 300px;
   border: 1px solid #00ff00;
-  border-radius: 8px;
   margin-bottom: 15px;
-  background-color: #000;
+  border-radius: 8px;
   object-fit: contain;
+  background-color: #000;
 }
 
 .textLink {

@@ -1,13 +1,26 @@
 import Web3 from 'web3';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const getEvidenceContract = async() => {    
-    const web3 = new Web3(new Web3.providers.HttpProvider(process.env.SEPOLIA_URL));
+    try {
+        const web3 = new Web3(new Web3.providers.HttpProvider(process.env.SEPOLIA_URL));
 
-    const contractABI = process.env.CONTRACT_ABI;
-    const contractAddress = process.env.CONTRACT_ADDRESS;
+        const contractABI = JSON.parse(process.env.CONTRACT_ABI);
+        const contractAddress = process.env.CONTRACT_ADDRESS;
 
-    // Creating contract instance
-    return new web3.eth.Contract(contractABI, contractAddress);  // Might be called in the Evidence management routes to talk to the contract, Not Added yet.
+        if (!Array.isArray(contractABI)) {
+            throw new Error('ABI is not an array');
+        }
+        
+        console.log("Raw ABI Type:", typeof process.env.CONTRACT_ABI); // Should be 'string'
+        console.log("Parsed ABI Type:", Array.isArray(JSON.parse(process.env.CONTRACT_ABI))); // Should be true
+        // Creating contract instance
+        return new web3.eth.Contract(contractABI, contractAddress);
+    } catch (error) {
+        console.error('Error initializing contract:', error);
+        throw error;
+    }
 };
 
 const fetchLogs = async (req) => {

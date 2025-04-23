@@ -18,34 +18,38 @@ const Login = () => {
         password,
       });
 
-      const { role, username, email: resEmail, contact, deparment, rank, e_id, dateOfJoining } = response.data;
+      const {
+        role,
+        username,
+        email: resEmail,
+        contact,
+        deparment,
+        rank,
+        e_id,
+        dateOfJoining,
+      } = response.data;
 
-      console.log("Login successful:", role, username);
+      const user = {
+        role,
+        username,
+        email: resEmail || email,
+        contact: contact || "",
+        rank,
+        deparment,
+        e_id,
+        dateOfJoining,
+      };
 
-      // Redirect based on role
+      localStorage.setItem("user", JSON.stringify(user));
+
       if (["admin", "forensic", "police", "staff"].includes(role)) {
-        navigate(`/${role}`, {
-          state: {
-            role,
-            username,
-            email: resEmail || email, // fallback to state if backend doesn't return
-            contact: contact || "", // fallback if missing
-            rank,
-            deparment,
-            e_id,
-            dateOfJoining
-          },
-        });
+        navigate(`/${role}`);
       } else {
         alert("Unknown role: " + role);
       }
     } catch (error) {
       console.error("Login failed:", error);
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
+      if (error.response?.data?.message) {
         alert(error.response.data.message);
       } else {
         alert("Login failed. Please try again.");
@@ -66,7 +70,6 @@ const Login = () => {
           <input
             type="email"
             id="email"
-            name="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -76,7 +79,6 @@ const Login = () => {
           <input
             type="password"
             id="password"
-            name="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -85,6 +87,7 @@ const Login = () => {
           <button type="submit" className="btn">
             Login
           </button>
+
           <p className="signup-link">
             Don't have an account? <Link to="/registration">Sign up</Link>
           </p>

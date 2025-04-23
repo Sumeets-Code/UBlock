@@ -1,5 +1,6 @@
 import React, { Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import ProtectedRoute from './components/ProtectedRoute';
 
 // General
 const UBlock = lazy(() => import('./components/UBlock'));
@@ -37,36 +38,44 @@ const App = () => {
     <Router>
       <Suspense fallback={<div className="loading">Loading...</div>}>
         <Routes>
-          {/* General Routes */}
+          {/* Public Routes */}
           <Route path="/" element={<UBlock />} />
           <Route path="/login" element={<Login />} />
           <Route path="/registration" element={<Regist />} />
 
-          {/* Admin Routes */}
-          <Route path="/admin" element={<AdminPanel />} />
-          <Route path="/admin/manage-users" element={<ManageUsers />} />
-          <Route path="/admin/review-evidence" element={<ReviewEvidence />} />
-          <Route path="/admin/review-logs" element={<ReviewLogs />} />
+          {/* Protected Admin Routes */}
+          <Route path="/admin" element={<ProtectedRoute role="admin" />}>
+            <Route index element={<AdminPanel />} />
+            <Route path="manage-users" element={<ManageUsers />} />
+            <Route path="review-evidence" element={<ReviewEvidence />} />
+            <Route path="review-logs" element={<ReviewLogs />} />
+          </Route>
 
-          {/* Forensic Routes */}
-          <Route path="/forensic" element={<ForensicProfile />} />
-          <Route path="/forensic/manage-evidence" element={<ManageEvidence />} />
-          <Route path="/forensic/change-password" element={<ChangePassword />} />
-          <Route path="/forensic/update-profile" element={<ChangeProfile />} />
+          {/* Protected Forensic Routes */}
+          <Route path="/forensic" element={<ProtectedRoute role="forensic" />}>
+            <Route index element={<ForensicProfile />} />
+            <Route path="manage-evidence" element={<ManageEvidence />} />
+            <Route path="change-password" element={<ChangePassword />} />
+            <Route path="update-profile" element={<ChangeProfile />} />
+          </Route>
 
-          {/* Staff Routes */}
-          <Route path="/staff" element={<StaffProfile />} />
-          <Route path="/staff/change-password" element={<SChangePassword />} />
-          <Route path="/staff/update-profile" element={<UpdateProfile />} />
-          <Route path="/staff/view-evidence" element={<ViewEvidence />} />
-          <Route path="/staff/manage-logs" element={<ManageLogs />} />
+          {/* Protected Staff Routes */}
+          <Route path="/staff" element={<ProtectedRoute role="staff" />}>
+            <Route index element={<StaffProfile />} />
+            <Route path="change-password" element={<SChangePassword />} />
+            <Route path="update-profile" element={<UpdateProfile />} />
+            <Route path="view-evidence" element={<ViewEvidence />} />
+            <Route path="manage-logs" element={<ManageLogs />} />
+          </Route>
 
-          {/* Police Routes */}
-          <Route path="/police" element={<PoliceProfile />} />
-          <Route path="/police/view-evidence" element={<PoliceViewEvidence />} />
-          <Route path="/police/manage-logs" element={<PoliceManageLogs />} />
-          <Route path="/police/change-password" element={<PoliceChangePassword />} />
-          <Route path="/police/update-profile" element={<PoliceUpdateProfile />} />
+          {/* Protected Police Routes */}
+          <Route path="/police" element={<ProtectedRoute role="police" />}>
+            <Route index element={<PoliceProfile />} />
+            <Route path="view-evidence" element={<PoliceViewEvidence />} />
+            <Route path="manage-logs" element={<PoliceManageLogs />} />
+            <Route path="change-password" element={<PoliceChangePassword />} />
+            <Route path="update-profile" element={<PoliceUpdateProfile />} />
+          </Route>
         </Routes>
       </Suspense>
     </Router>
