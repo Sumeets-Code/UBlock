@@ -47,39 +47,28 @@ router.post('/upload', upload.single('file'), async (req, res) => {
 
     const FileSize = byteConverter(file.size);
     
-    // const eviData = {
-    //   index: req.body.index,
-    //   name: req.body.name,
-    //   uploaderAddress: req.body.uploaderAddress,
-    //   timestamp: req.body.timestamp || new Date().toISOString().replace('T', ' ').slice(0, 19),
-    //   ipfsHash: result.cid,
-    //   fileType: fileExtension,
-    //   discription: req.body.discription,
-    //   fileSize: FileSize,
-    // };
-    
     // Corrected eviData and removed registerOnBlockchain condition
     const eviData = {
       index: req.body.evidenceId,
       uploaderAddress: req.body.walletAddress,
       timestamp: req.body.timestamp || new Date().toISOString().replace('T', ' ').slice(0, 19),
       ipfsHash: result.cid,
-      fileType: req.body.fileType,
+      fileType: fileExtension,
       description: req.body.description, // Corrected typo
       fileSize: FileSize,
     };
 
     try {
       // Always register on blockchain
-      const contract = await getEvidenceContract();
-      const transaction = await contract.methods
-        .registerEvidence(result.cid, fileExtension)
-        .send({ 
-          from: req.body.walletAddress, 
-          gas: process.env.GAS_LIMIT || 3000000 
-        });
+      // const contract = await getEvidenceContract();
+      // const transaction = await contract.methods
+      //   .registerEvidence(result.cid, fileExtension)
+      //   .send({ 
+      //     from: req.body.walletAddress, 
+      //     gas: process.env.GAS_LIMIT || 3000000 
+      //   });
       
-      eviData.transactionHash = transaction.transactionHash;
+      // eviData.transactionHash = transaction.transactionHash;
       
       await evidence.create(eviData);
       
@@ -87,8 +76,9 @@ router.post('/upload', upload.single('file'), async (req, res) => {
         success: true,
         message: 'Evidence uploaded successfully.',
         ipfsHash: result.cid,
-        transactionHash: transaction.transactionHash // Include in response
+        // transactionHash: transaction.transactionHash // Include in response
       });
+      console.log("done");
     } catch (err) {
       console.error("Error inserting evidence: ", err);
       res.status(500).json({ 
@@ -138,7 +128,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
 
 // GET route to retrieve evidence by index
 router.get('/retrieve', async (req, res) => {
-  const evidenceId = req.query.index;
+  const evidenceId = req.query.evidenceId;
   try {
     const evi = await evidence.findOne({ index: evidenceId });
 
