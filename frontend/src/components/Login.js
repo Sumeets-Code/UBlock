@@ -18,6 +18,8 @@ const Login = () => {
         password,
       });
 
+      console.log("Backend response:", response.data); // Debug log
+
       const {
         role,
         username,
@@ -29,23 +31,23 @@ const Login = () => {
         dateOfJoining
       } = response.data;
 
-      console.log("Login successful:", role, username);
+      const cleanRole = role?.toLowerCase(); // Normalize role
 
-      // Store in localStorage
-      localStorage.setItem("user", JSON.stringify({
-        role,
-        username,
-        email: resEmail || email,
-        contact: contact || "",
-        rank,
-        deparment,
-        e_id,
-        dateOfJoining,
-      }));
+      if (["admin", "forensic", "police", "staff"].includes(cleanRole)) {
+        // Save to localStorage
+        localStorage.setItem("user", JSON.stringify({
+          role: cleanRole,
+          username,
+          email: resEmail || email,
+          contact: contact || "",
+          rank,
+          deparment,
+          e_id,
+          dateOfJoining,
+        }));
 
-      // Navigate based on role
-      if (["admin", "forensic", "police", "staff"].includes(role)) {
-        navigate(`/${role}`);
+        // Navigate
+        navigate(`/${cleanRole}`);
       } else {
         alert("Unknown role: " + role);
       }
