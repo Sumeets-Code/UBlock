@@ -18,34 +18,41 @@ const Login = () => {
         password,
       });
 
-      const { role, username, email: resEmail, contact, deparment, rank, e_id, dateOfJoining } = response.data;
+      const {
+        role,
+        username,
+        email: resEmail,
+        contact,
+        deparment,
+        rank,
+        e_id,
+        dateOfJoining
+      } = response.data;
 
       console.log("Login successful:", role, username);
 
-      // Redirect based on role
+      // Store in localStorage
+      localStorage.setItem("user", JSON.stringify({
+        role,
+        username,
+        email: resEmail || email,
+        contact: contact || "",
+        rank,
+        deparment,
+        e_id,
+        dateOfJoining,
+      }));
+
+      // Navigate based on role
       if (["admin", "forensic", "police", "staff"].includes(role)) {
-        navigate(`/${role}`, {
-          state: {
-            role,
-            username,
-            email: resEmail || email, // fallback to state if backend doesn't return
-            contact: contact || "", // fallback if missing
-            rank,
-            deparment,
-            e_id,
-            dateOfJoining
-          },
-        });
+        navigate(`/${role}`);
       } else {
         alert("Unknown role: " + role);
       }
+
     } catch (error) {
       console.error("Login failed:", error);
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
+      if (error.response && error.response.data && error.response.data.message) {
         alert(error.response.data.message);
       } else {
         alert("Login failed. Please try again.");
