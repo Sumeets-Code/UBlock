@@ -18,40 +18,53 @@ const Login = () => {
         password,
       });
 
+      console.log("Backend response:", response.data);
+
       const {
         role,
         username,
         email: resEmail,
         contact,
-        deparment,
+        department, // Corrected spelling
         rank,
-        employeeid,
+        employeeid, // Changed to match localStorage key
         dateOfJoining
       } = response.data;
-
-      const cleanRole = role?.toLowerCase(); // Normalize role
       
+      const cleanRole = role?.toLowerCase();
+
       const user = {
         role: cleanRole,
         username,
         email: resEmail || email,
         contact: contact || "",
         rank,
-        deparment,
+        department, // Corrected spelling
         employeeid,
         dateOfJoining,
       };
 
-      // Navigate based on role
-      if (["admin", "forensic", "police", "staff"].includes(role)) {
-        navigate(`/${role}`, { state: user });
+      if (["admin", "forensic", "police", "staff"].includes(cleanRole)) {
+        // Save to localStorage
+        localStorage.setItem("user", JSON.stringify({
+          role: cleanRole,
+          username,
+          email: resEmail || email,
+          contact: contact || "",
+          rank,
+          department, // Corrected spelling
+          employeeid, // Fixed variable name
+          dateOfJoining,
+        }));
+
+        // Single navigation call
+        navigate(`/${cleanRole}`, { state: user });
       } else {
         alert("Unknown role: " + role);
       }
-
     } catch (error) {
       console.error("Login failed:", error);
-      if (error.response && error.response.data && error.response.data.message) {
+      if (error.response?.data?.message) {
         alert(error.response.data.message);
       } else {
         alert("Login failed. Please try again.");

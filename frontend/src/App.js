@@ -1,5 +1,9 @@
 import React, { Suspense, lazy } from 'react';
+<<<<<<< HEAD
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+=======
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+>>>>>>> c616fc16181734ec972d106f8b6e7321c238b563
 import ProtectedRoute from './components/ProtectedRoute';
 
 // General
@@ -38,11 +42,17 @@ const App = () => {
     <Router>
       <Suspense fallback={<div className="loading">Loading...</div>}>
         <Routes>
+<<<<<<< HEAD
           {/* Public Routes */}
+=======
+
+          {/* General Routes */}
+>>>>>>> c616fc16181734ec972d106f8b6e7321c238b563
           <Route path="/" element={<UBlock />} />
           <Route path="/login" element={<Login />} />
           <Route path="/registration" element={<Regist />} />
 
+<<<<<<< HEAD
           {/* Protected Admin Routes */}
           <Route path="/admin" element={<ProtectedRoute role="admin" />}>
             <Route index element={<AdminPanel />} />
@@ -76,6 +86,160 @@ const App = () => {
             <Route path="change-password" element={<PoliceChangePassword />} />
             <Route path="update-profile" element={<PoliceUpdateProfile />} />
           </Route>
+=======
+          {/* Admin Protected Routes */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminPanel />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/manage-users"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <ManageUsers />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/review-evidence"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <ReviewEvidence />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/review-logs"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <ReviewLogs />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Forensic Protected Routes */}
+          <Route
+            path="/forensic"
+            element={
+              <ProtectedRoute allowedRoles={['forensic']}>
+                <ForensicProfile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/forensic/manage-evidence"
+            element={
+              <ProtectedRoute allowedRoles={['forensic']}>
+                <ManageEvidence />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/forensic/change-password"
+            element={
+              <ProtectedRoute allowedRoles={['forensic']}>
+                <ChangePassword />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/forensic/update-profile"
+            element={
+              <ProtectedRoute allowedRoles={['forensic']}>
+                <ChangeProfile />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Staff Protected Routes */}
+          <Route
+            path="/staff"
+            element={
+              <ProtectedRoute allowedRoles={['staff']}>
+                <StaffProfile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/staff/change-password"
+            element={
+              <ProtectedRoute allowedRoles={['staff']}>
+                <SChangePassword />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/staff/update-profile"
+            element={
+              <ProtectedRoute allowedRoles={['staff']}>
+                <UpdateProfile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/staff/view-evidence"
+            element={
+              <ProtectedRoute allowedRoles={['staff']}>
+                <ViewEvidence />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/staff/manage-logs"
+            element={
+              <ProtectedRoute allowedRoles={['staff']}>
+                <ManageLogs />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Police Protected Routes */}
+          <Route
+            path="/police"
+            element={
+              <ProtectedRoute allowedRoles={['police']}>
+                <PoliceProfile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/police/view-evidence"
+            element={
+              <ProtectedRoute allowedRoles={['police']}>
+                <PoliceViewEvidence />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/police/manage-logs"
+            element={
+              <ProtectedRoute allowedRoles={['police']}>
+                <PoliceManageLogs />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/police/change-password"
+            element={
+              <ProtectedRoute allowedRoles={['police']}>
+                <PoliceChangePassword />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/police/update-profile"
+            element={
+              <ProtectedRoute allowedRoles={['police']}>
+                <PoliceUpdateProfile />
+              </ProtectedRoute>
+            }
+          />
+
+>>>>>>> c616fc16181734ec972d106f8b6e7321c238b563
         </Routes>
       </Suspense>
     </Router>
