@@ -1,159 +1,151 @@
-/* Main container */
 .container {
-  background-color: #0b0b0b;
-  color: #00ff00;
-  font-family: "Courier New", monospace;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+    background-color: #0b0b0b;
+    color: #00ff00;
+    font-family: 'Courier New', monospace;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
-/* Header section */
 .header {
-  background-color: #121212;
-  padding: 20px;
-  text-align: center;
-  border-bottom: 2px solid #00ff00;
+    background-color: #121212;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 2px solid #00ff00;
 }
 
 .header h1 {
-  color: #00ff00;
-  font-size: 2rem;
-  margin: 0;
+    color: #00ff00;
+    font-size: 2rem;
+    margin: 0;
 }
 
-/* Main content */
 .main {
-  padding: 30px;
-  flex: 1;
+    padding: 30px;
+    flex: 1;
 }
 
-/* Form to add new evidence */
 .form {
-  display: flex;
-  margin-bottom: 20px;
-  gap: 10px;
-  flex-wrap: wrap;
+    display: flex;
+    margin-bottom: 20px;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
-.input,
-.editInput {
-  background-color: #1c1c1c;
-  color: #00ff00;
-  border: 1px solid #00ff00;
-  padding: 8px;
-  font-family: "Courier New", monospace;
-  flex: 1;
-  outline: none;
-  transition: border 0.3s;
+.input {
+    background-color: #1c1c1c;
+    color: #00ff00;
+    border: 1px solid #00ff00;
+    padding: 8px;
+    flex: 1;
+    outline: none;
 }
 
-.input:focus,
-.editInput:focus {
-  border-color: #39ff14;
+.input:focus {
+    border-color: #39ff14;
 }
 
-/* Buttons */
 .button,
 .actionBtn,
-.uploadButton {
-  background-color: #0b0b0b;
-  color: #00ff00;
-  border: 1px solid #00ff00;
-  padding: 8px 12px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-family: "Courier New", monospace;
-  font-size: 0.9rem;
+.closeBtn {
+    background-color: #0b0b0b;
+    color: #00ff00;
+    border: 1px solid #00ff00;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Courier New', monospace;
 }
 
 .button:hover,
 .actionBtn:hover,
-.uploadButton:hover {
-  background-color: #00ff00;
-  color: #0b0b0b;
+.closeBtn:hover {
+    background-color: #00ff00;
+    color: #0b0b0b;
 }
 
-/* Evidence table */
 .table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
 }
 
 .table th,
 .table td {
-  border: 1px solid #00ff00;
-  padding: 10px;
-  text-align: left;
+    border: 1px solid #00ff00;
+    padding: 10px;
+    text-align: left;
 }
 
 .table th {
-  background-color: #121212;
-  color: #00ff00;
-  font-size: 1.1rem;
+    background-color: #121212;
+    font-size: 1.1rem;
 }
 
 .table tr:nth-child(even) {
-  background-color: #1c1c1c;
+    background-color: #1c1c1c;
 }
 
 .table tr:hover {
-  background-color: #222;
-  transition: background-color 0.2s;
+    background-color: #222;
 }
 
-/* Action buttons layout */
 .actions {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
-/* Footer section */
 .footer {
-  background-color: #121212;
-  color: #00ff00;
-  text-align: center;
-  padding: 15px;
-  border-top: 2px solid #00ff00;
-  font-size: 0.9rem;
+    background-color: #121212;
+    color: #00ff00;
+    text-align: center;
+    padding: 15px;
+    border-top: 2px solid #00ff00;
 }
 
-/* File upload section */
-.uploadSection {
-  margin-bottom: 20px;
-  display: flex;
-  gap: 10px;
+/* Popup styles */
+.popupOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 255, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
 }
 
-.uploadInput {
-  background-color: #1c1c1c;
-  color: #00ff00;
-  border: 1px solid #00ff00;
-  padding: 8px;
-  font-family: "Courier New", monospace;
-  flex: 1;
-  outline: none;
-  transition: border 0.3s;
+.popupCard {
+    background-color: #111;
+    border: 2px solid #00ff00;
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 0 10px #00ff00;
+    max-width: 400px;
+    width: 90%;
 }
 
-.uploadInput:focus {
-  border-color: #39ff14;
+.popupCard h2 {
+    color: #00ff00;
+    margin-bottom: 20px;
 }
 
-.uploadButton {
-  background-color: #0b0b0b;
-  color: #00ff00;
-  border: 1px solid #00ff00;
-  padding: 8px 12px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-family: "Courier New", monospace;
-  font-size: 0.9rem;
+.fileInput {
+    background-color: #1c1c1c;
+    color: #00ff00;
+    border: 1px solid #00ff00;
+    padding: 10px;
+    width: 100%;
+    margin-bottom: 15px;
 }
 
-.uploadButton:hover {
-  background-color: #00ff00;
-  color: #0b0b0b;
+.previewImage {
+    max-width: 100%;
+    border: 1px solid #00ff00;
+    margin-bottom: 15px;
+    border-radius: 8px;
 }
