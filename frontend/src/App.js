@@ -43,66 +43,102 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/registration" element={<Regist />} />
 
-          {/* Admin Protected Routes */}
+          {/* Admin Routes */}
           <Route path="/admin" element={
-            <ProtectedRoute role="admin"><AdminPanel /></ProtectedRoute>
+            <ProtectedRoute allowedRoles={['admin']}>
+              <AdminPanel />
+            </ProtectedRoute>
           } />
           <Route path="/admin/manage-users" element={
-            <ProtectedRoute role="admin"><ManageUsers /></ProtectedRoute>
+            <ProtectedRoute allowedRoles={['admin']}>
+              <ManageUsers />
+            </ProtectedRoute>
           } />
           <Route path="/admin/review-evidence" element={
-            <ProtectedRoute role="admin"><ReviewEvidence /></ProtectedRoute>
+            <ProtectedRoute allowedRoles={['admin']}>
+              <ReviewEvidence />
+            </ProtectedRoute>
           } />
           <Route path="/admin/review-logs" element={
-            <ProtectedRoute role="admin"><ReviewLogs /></ProtectedRoute>
+            <ProtectedRoute allowedRoles={['admin']}>
+              <ReviewLogs />
+            </ProtectedRoute>
           } />
 
-          {/* Forensic Protected Routes */}
+          {/* Forensic Routes */}
           <Route path="/forensic" element={
-            <ProtectedRoute role="forensic"><ForensicProfile /></ProtectedRoute>
+            <ProtectedRoute allowedRoles={['forensic']}>
+              <ForensicProfile />
+            </ProtectedRoute>
           } />
           <Route path="/forensic/manage-evidence" element={
-            <ProtectedRoute role="forensic"><ManageEvidence /></ProtectedRoute>
+            <ProtectedRoute allowedRoles={['forensic']}>
+              <ManageEvidence />
+            </ProtectedRoute>
           } />
           <Route path="/forensic/change-password" element={
-            <ProtectedRoute role="forensic"><ChangePassword /></ProtectedRoute>
+            <ProtectedRoute allowedRoles={['forensic']}>
+              <ChangePassword />
+            </ProtectedRoute>
           } />
           <Route path="/forensic/update-profile" element={
-            <ProtectedRoute role="forensic"><ChangeProfile /></ProtectedRoute>
+            <ProtectedRoute allowedRoles={['forensic']}>
+              <ChangeProfile />
+            </ProtectedRoute>
           } />
 
-          {/* Staff Protected Routes */}
+          {/* Staff Routes */}
           <Route path="/staff" element={
-            <ProtectedRoute role="staff"><StaffProfile /></ProtectedRoute>
+            <ProtectedRoute allowedRoles={['staff']}>
+              <StaffProfile />
+            </ProtectedRoute>
           } />
           <Route path="/staff/change-password" element={
-            <ProtectedRoute role="staff"><SChangePassword /></ProtectedRoute>
+            <ProtectedRoute allowedRoles={['staff']}>
+              <SChangePassword />
+            </ProtectedRoute>
           } />
           <Route path="/staff/update-profile" element={
-            <ProtectedRoute role="staff"><UpdateProfile /></ProtectedRoute>
+            <ProtectedRoute allowedRoles={['staff']}>
+              <UpdateProfile />
+            </ProtectedRoute>
           } />
           <Route path="/staff/view-evidence" element={
-            <ProtectedRoute role="staff"><ViewEvidence /></ProtectedRoute>
+            <ProtectedRoute allowedRoles={['staff']}>
+              <ViewEvidence />
+            </ProtectedRoute>
           } />
           <Route path="/staff/manage-logs" element={
-            <ProtectedRoute role="staff"><ManageLogs /></ProtectedRoute>
+            <ProtectedRoute allowedRoles={['staff']}>
+              <ManageLogs />
+            </ProtectedRoute>
           } />
 
-          {/* Police Protected Routes */}
+          {/* Police Routes */}
           <Route path="/police" element={
-            <ProtectedRoute role="police"><PoliceProfile /></ProtectedRoute>
+            <ProtectedRoute allowedRoles={['police']}>
+              <PoliceProfile />
+            </ProtectedRoute>
           } />
           <Route path="/police/view-evidence" element={
-            <ProtectedRoute role="police"><PoliceViewEvidence /></ProtectedRoute>
+            <ProtectedRoute allowedRoles={['police']}>
+              <PoliceViewEvidence />
+            </ProtectedRoute>
           } />
           <Route path="/police/manage-logs" element={
-            <ProtectedRoute role="police"><PoliceManageLogs /></ProtectedRoute>
+            <ProtectedRoute allowedRoles={['police']}>
+              <PoliceManageLogs />
+            </ProtectedRoute>
           } />
           <Route path="/police/change-password" element={
-            <ProtectedRoute role="police"><PoliceChangePassword /></ProtectedRoute>
+            <ProtectedRoute allowedRoles={['police']}>
+              <PoliceChangePassword />
+            </ProtectedRoute>
           } />
           <Route path="/police/update-profile" element={
-            <ProtectedRoute role="police"><PoliceUpdateProfile /></ProtectedRoute>
+            <ProtectedRoute allowedRoles={['police']}>
+              <PoliceUpdateProfile />
+            </ProtectedRoute>
           } />
         </Routes>
       </Suspense>
