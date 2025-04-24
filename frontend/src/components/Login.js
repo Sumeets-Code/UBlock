@@ -33,24 +33,26 @@ const Login = () => {
 
       const cleanRole = role ? role.toLowerCase() : "";
 
+      const user = {
+        role: cleanRole,
+        username,
+        email: resEmail || email,
+        contact: contact || "",
+        rank,
+        deparment,
+        e_id,
+        dateOfJoining,
+      }
+
       console.log("Raw role from backend:", role);
       console.log("Normalized role:", cleanRole);
 
       if (["admin", "forensic", "police", "staff"].includes(cleanRole)) {
         // Save to localStorage
-        localStorage.setItem("user", JSON.stringify({
-          role: cleanRole,
-          username,
-          email: resEmail || email,
-          contact: contact || "",
-          rank,
-          deparment,
-          e_id,
-          dateOfJoining,
-        }));
+        localStorage.setItem("user", JSON.stringify( user ));
 
         console.log("Navigating to:", `/${cleanRole}`);
-        navigate(`/${cleanRole}`);
+        navigate(`/${cleanRole}`, { state: user });
       } else {
         alert("Unknown role: " + role);
       }
