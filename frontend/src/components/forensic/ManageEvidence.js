@@ -4,39 +4,55 @@ import axios from "axios";
 import Web3 from "web3";
 
 function ManageEvidence() {
-  const [evidenceItems, setEvidenceItems] = useState([
-    {
-      id: 1,
-      timestamp: "2025-04-18 08:45:00",
-      description: "Fingerprint on knife",
-      file: null,
-    },
-    {
-      id: 2,
-      timestamp: "2025-04-18 09:00:00",
-      description: "CCTV footage from hallway",
-      file: null,
-    },
-    {
-      id: 3,
-      timestamp: "2025-04-18 09:30:00",
-      description: "Email conversation with suspect",
-      file: null,
-    },
-  ]);
-
+  // State Management
+  const [evidenceItems, setEvidenceItems] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [newDescription, setNewDescription] = useState("");
-  const [showUploadPopup, setShowUploadPopup] = useState(false);
   const [selectedEvidenceId, setSelectedEvidenceId] = useState(null);
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
-  const [showViewPopup, setShowViewPopup] = useState(false);
-  const [viewItem, setViewItem] = useState(null);
-  const [walletAddress, setWalletAddress] = useState("");
-  const [web3, setWeb3] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
   const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [showViewPopup, setShowViewPopup] = useState(false);
+  const [viewItem, setViewItem] = useState(null);
+  const [error, setError] = useState(null);
+
+
+  // UI state
+  const [showUploadPopup, setShowUploadPopup] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  
+  // Web3 state
+  const [web3, setWeb3] = useState(null);
+  const [walletAddress, setWalletAddress] = useState("");
+
+  // Fetch evidence from backend
+  const fetchEvidence = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await axios.get('http://localhost:3300/allEvidences');
+      
+      // Transform backend data to frontend format
+      const formattedData = response.data.map(item => ({
+        id: item._id,
+        timestamp: new Date(item.timestamp).toLocaleString(),
+        description: item.description,
+        fileUrl: item.ipfsHash ? `https://ipfs.io/ipfs/${item.ipfsHash}` : null,
+        ipfsHash: item.ipfsHash || null,
+        transactionHash: item.transactionHash || null,
+        status: item.ipfsHash ? "Secured" : "Pending"
+      }));
+
+      setEvidenceItems(formattedData);
+    } catch (err) {
+      console.error("Fetch error:", err);
+      setError("Failed to load evidence. Please try again.");
+      setEvidenceItems([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Initialize Web3 and connect to MetaMask on component mount
   useEffect(() => {
@@ -68,6 +84,7 @@ function ManageEvidence() {
     };
 
     initWeb3();
+    fetchEvidence();
     
     // Cleanup event listener on component unmount
     return () => {
@@ -77,21 +94,6 @@ function ManageEvidence() {
     };
   }, []);
 
-  // Fetch evidence items from backend on component mount
-  useEffect(() => {
-    const fetchEvidenceItems = async () => {
-      try {
-        const response = await axios.get('http://localhost:3300/viewEvidence', {evidenceId});
-        if (response.data && response.data.success) {
-          setEvidenceItems(response.data.evidence);
-        }
-      } catch (error) {
-        console.error("Error fetching evidence items:", error);
-      }
-    };
-
-    fetchEvidenceItems();
-  }, []);
 
   const connectWallet = async () => {
     try {
@@ -214,7 +216,8 @@ function ManageEvidence() {
     // Record this access in the blockchain
     if (item.ipfsHash && walletAddress) {
       try {
-        await recordAccess(item.id, item.ipfsHash);
+        // await recordAccess(item.id, item.ipfsHash);
+        window.open(item.fileUrl, '_blank');
       } catch (error) {
         console.error("Failed to record access:", error);
       }
@@ -321,17 +324,17 @@ function ManageEvidence() {
                 <td>{item.description}</td>
                 <td>{item.ipfsHash ? "Secured" : "Pending"}</td>
                 <td className={styles.actions}>
-                  <button
-                    onClick={() => viewEvidence(item)}
-                    className={styles.actionBtn}
-                    disabled={!item.file}
-                  >
-                    View
-                  </button>
+                  {item.fileUrl && (
+                      <button onClick={viewEvidence} 
+                        className={styles.actionBtn}
+                      >
+                        View
+                      </button>
+                  )}
                   {item.ipfsHash && (
                     <button
                       onClick={() => getAccessLogs(item.id)}
-                      className={styles.logsBtn}
+                      className={styles.actionBtn}
                     >
                       Logs
                     </button>
@@ -359,7 +362,7 @@ function ManageEvidence() {
                   )}
                   <button 
                     onClick={uploadToBackend} 
-                    className={`${styles.uploadBtn} ${isUploading ? styles.uploading : ''}`}
+                    className={styles.actionBtn}
                     disabled={isUploading}
                   >
                     {isUploading ? 'Uploading...' : 'Upload to Blockchain'}
@@ -388,6 +391,14 @@ function ManageEvidence() {
               <p>
                 <strong>Description:</strong> {viewItem.description}
               </p>
+
+              <button 
+                onClick={() => window.open(viewItem.fileUrl, '_blank')} 
+                className={styles.actionBtn}
+              > 
+                View File
+              </button>
+
               {viewItem.ipfsHash && (
                 <p>
                   <strong>IPFS Hash:</strong> {viewItem.ipfsHash}

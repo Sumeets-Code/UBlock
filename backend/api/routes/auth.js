@@ -1,6 +1,6 @@
 import express from 'express';
 import ldata from '../models/user_model.js';
-import sendEmail from '../../email_service/sendemail.js';
+import sendEmail from '../../email_service/sendEmail.js';
 import argon2 from 'argon2';
 import { fetchLogs } from '../middleware/helperFunc.js';
 

@@ -270,4 +270,21 @@ router.get("/getEvidences", async (req, res) => {
   }
 });
 
+router.get("/allEvidences", async (req, res) => {
+  try {
+    const evi = await evidence.find().sort({ timestamp: -1 }).limit(10);
+    const formattedEvidences = evi.map((item) => ({
+      ...item._doc,
+      fileUrl: `https://ipfs.io/ipfs/${item.ipfsHash}`,
+      date: new Date(item.timestamp).toISOString(),
+    }));
+    res.json(formattedEvidences);
+  } catch (err) {
+    res.status(500).json({
+      message: "Error fetching evidences from the database",
+      error: err.message,
+    });
+  }
+});
+
 export default router;
