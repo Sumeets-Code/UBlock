@@ -1,21 +1,21 @@
 // ForensicProfile.js
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import styles from "./ForensicProfile.module.css";
 
 const ForensicProfile = () => {
   const [profile, setProfile] = useState(null);
-  const fileInputRef = useRef(null);
   const navigate = useNavigate();
-  const location = useLocation(); // ✅ moved here to top-level
+  const location = useLocation();
 
   useEffect(() => {
     // Get state passed from login (if any)
-    const { username, email, contact, rank, department, employeeid, dateOfJoining } = location.state || {};
+    const { profilePic, username, email, contact, rank, department, employeeid, dateOfJoining } = location.state || {};
 
     const fetchProfile = async () => {
       // You can replace this mock with an API call later
       const mockData = {
+        profilePic: profilePic || "default.jpg",
         name: username || "Unknown",
         email: email || "unknown@example.com",
         phone: contact || "0000000000",
@@ -23,24 +23,12 @@ const ForensicProfile = () => {
         department: department || "Forensic Engineering",
         employeeId: employeeid || "Unknown",
         dateOfJoining: dateOfJoining || "Unknown",
-        profilePic: null,
       };
       setProfile(mockData);
     };
 
     fetchProfile();
   }, [location]);
-
-  const handleProfilePicChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfile((prev) => ({ ...prev, profilePic: reader.result }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const handleLogout = () => {
     navigate("/");
@@ -61,19 +49,6 @@ const ForensicProfile = () => {
             alt="Profile"
             className={styles.profilePhoto}
           />
-          <input
-            type="file"
-            ref={fileInputRef}
-            accept="image/*"
-            onChange={handleProfilePicChange}
-            className={styles.fileInput}
-          />
-          <button
-            onClick={() => fileInputRef.current.click()}
-            className={styles.uploadBtn}
-          >
-            Upload Photo
-          </button>
         </div>
 
         <div className={styles.details}>

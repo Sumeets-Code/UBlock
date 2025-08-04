@@ -1,288 +1,208 @@
-import fs from "fs";
-import path from "path";
-import express from "express";
-import multer from "multer";
-import { uploadToIPFS, retrieveFromIPFS } from "../../ipfs_services/index.js";
-import evidence from "../models/evidence_model.js";
-import { getEvidenceContract, fetchLogs } from "../middleware/helperFunc.js";
-import dotenv from "dotenv";
-dotenv.config();
+// routes/evidence.js
+import express from 'express';
+import multer from 'multer';
+import path from 'path';
+import { uploadToIPFS } from '../../ipfs_services/upload.js';
+import Evidence from '../models/evidence_model.js';
+import blockchainService from '../services/blockchain/blockchain_servces.js';
 
 const router = express.Router();
+const upload = multer({
+  limits: {
+    fileSize: 100 * 1024 * 1024 // 100MB limit (adjust as needed)
+  },
+  fileFilter: (req, file, cb) => {
+    // Accept all file types
+    cb(null, true);
+  }
+});
 
-// // Configure multer for file uploads
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     const uploadDir = path.join(__dirname, '../uploads');
-//     if (!fs.existsSync(uploadDir)) {
-//       fs.mkdirSync(uploadDir, { recursive: true });
-//     }
-//     cb(null, uploadDir);
-//   },
-//   filename: function (req, file, cb) {
-//     cb(null, `${Date.now()}-${file.originalname}`);
-//   }
-// });
+// Helper function to get file type category
+const getFileCategory = (extension) => {
+  const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'];
+  const videoExtensions = ['.mp4', '.mov', '.avi', '.mkv', '.webm'];
+  const audioExtensions = ['.mp3', '.wav', '.ogg', '.m4a'];
+  const documentExtensions = ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.txt'];
 
-// const upload = multer({ storage: storage });
-const upload = multer();
+  if (imageExtensions.includes(extension)) return 'image';
+  if (videoExtensions.includes(extension)) return 'video';
+  if (audioExtensions.includes(extension)) return 'audio';
+  if (documentExtensions.includes(extension)) return 'document';
+  return 'other';
+};
 
 // POST route to upload evidence
-router.post("/upload", upload.single("file"), async (req, res) => {
+router.post('/upload', upload.single('file'), async (req, res) => {
   try {
-    const file = req.file;
-    if (!file) {
-      return res.status(400).json({
-        success: false,
-        error: "No file uploaded.",
-      });
+    // Validate request
+    if (!req.file) {
+      return res.status(400).json({ success: false, error: 'No file uploaded' });
+    }
+    if (!req.body.walletAddress) {
+      return res.status(400).json({ success: false, error: 'Wallet address required' });
     }
 
-    const result = await uploadToIPFS(file);
-    const fileExtension = path.extname(file.originalname);
+    // Get file extension and category
+    const fileExtension = path.extname(req.file.originalname).toLowerCase();
+    const fileCategory = getFileCategory(fileExtension);
 
+    // Get file size
     function byteConverter(bytes) {
       return (bytes / (1024 * 1024)).toFixed(2) + " MB";
     }
 
-    const FileSize = byteConverter(file.size);
+    const FileSize = byteConverter(req.file.size);
 
-    // Corrected eviData and removed registerOnBlockchain condition
-    const eviData = {
-      index: req.body.evidenceId,
+    // Upload to IPFS
+    const ipfsResult = await uploadToIPFS(req.file);
+
+
+    
+    // Prepare evidence data
+    const evidenceData = {
+      index: Date.now().toString(),
       uploaderAddress: req.body.walletAddress,
-      timestamp:
-        req.body.timestamp ||
-        new Date().toISOString().replace("T", " ").slice(0, 19),
-      ipfsHash: result.cid,
+      timestamp: req.body.timestamp || new Date().toISOString(),
+      ipfsHash: ipfsResult.cid.toString(),
       fileType: fileExtension,
-      description: req.body.description, // Corrected typo
+      fileCategory: fileCategory,
+      description: req.body.description || '',
       fileSize: FileSize,
     };
 
-    try {
-      // Always register on blockchain
-      // const contract = await getEvidenceContract();
-      // const transaction = await contract.methods
-      //   .registerEvidence(result.cid, fileExtension)
-      //   .send({
-      //     from: req.body.walletAddress,
-      //     gas: process.env.GAS_LIMIT || 3000000
-      //   });
+    // Save to database
+    const savedEvidence = await Evidence.create(evidenceData);
 
-      // eviData.transactionHash = transaction.transactionHash;
-
-      await evidence.create(eviData);
-
-      res.status(201).json({
-        success: true,
-        message: "Evidence uploaded successfully.",
-        ipfsHash: result.cid,
-        // transactionHash: transaction.transactionHash // Include in response
-      });
-      console.log("done");
-    } catch (err) {
-      console.error("Error inserting evidence: ", err);
-      res.status(500).json({
-        success: false,
-        message: err.message,
-      });
-    }
-    //     //
-    try {
-      // Register on blockchain if needed
-      if (req.body.registerOnBlockchain) {
-        const contract = await getEvidenceContract();
-        const transaction = await contract.methods
-          .registerEvidence(result.cid, fileExtension)
-          .send({
-            from: req.body.uploaderAddress,
-            gas: process.env.GAS_LIMIT || 3000000,
-          });
-
-        // Add transaction hash to the evidence data
-        eviData.transactionHash = transaction.transactionHash;
+    return res.status(201).json({
+      success: true,
+      message: 'Evidence uploaded and registered on blockchain',
+      evidence: {
+        ...savedEvidence._doc,
+        fileUrl: `https://ipfs.io/ipfs/${savedEvidence.ipfsHash}`,
+        downloadUrl: `/api/evidence/download?id=${savedEvidence._id}`
       }
+    });
 
-      // Insert into MongoDB
-      await evidence.create(eviData);
-
-      res.status(201).json({
-        success: true,
-        message: "Evidence uploaded successfully.",
-        ipfsHash: result.cid,
-      });
-    } catch (err) {
-      console.error("Error inserting evidence: ", err);
-      res.status(500).json({
-        success: false,
-        message: err.message,
-      });
-    }
-    //
   } catch (error) {
-    console.error("Error uploading to IPFS:", error);
-    res.status(500).json({
+    console.error('Upload error:', error);
+    return res.status(500).json({
       success: false,
-      error: "Failed to upload to IPFS.",
+      error: error.message || 'Failed to process evidence upload',
+      details: error.response?.data || null
     });
   }
 });
 
-// GET route to retrieve evidence by index
-router.get("/retrieve", async (req, res) => {
-  const evidenceId = req.query.evidenceId;
+// GET route to download evidence
+router.get('/download', async (req, res) => {
   try {
-    const evi = await evidence.findOne({ index: evidenceId });
-
-    if (evi) {
-      await retrieveFromIPFS(evi.ipfsHash, evi.fileType);
-      res.status(200).json({
-        success: true,
-        message: "Evidence retrieved successfully.",
-        evidence: evi,
-      });
-    } else {
-      res.status(404).json({
-        success: false,
-        error: "Evidence not found",
-      });
+    const { id } = req.query;
+    if (!id) {
+      return res.status(400).json({ error: 'Evidence ID required' });
     }
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: err.message,
-    });
+
+    const evidence = await Evidence.findById(id);
+    if (!evidence) {
+      return res.status(404).json({ error: 'Evidence not found' });
+    }
+
+    // Redirect to IPFS gateway
+    return res.redirect(`https://ipfs.io/ipfs/${evidence.ipfsHash}`);
+
+  } catch (error) {
+    console.error('Download error:', error);
+    return res.status(500).json({ error: 'Failed to process download' });
   }
 });
 
 // GET route to fetch all evidence
-router.get("/viewEvidence", async (req, res) => {
-  const evidenceId = req.query.evidenceId;
+router.get('/allEvidences', async (req, res) => {
   try {
-    // Fetch all evidence from MongoDB
-    const evidences = await evidence.find({ index: evidenceId });
+    const evidences = await Evidence.find()
+      .sort({ timestamp: -1 })
+      .limit(10)
+      .lean(); // Convert to plain JS objects
 
-    res.status(200).json({
-      success: true,
-      evidence: evidences,
-    });
+    const formattedEvidences = evidences.map(evidence => ({
+      ...evidence,
+      fileUrl: `https://ipfs.io/ipfs/${evidence.ipfsHash}`,
+      date: new Date(evidence.timestamp).toISOString()
+    }));
+
+    return res.json(formattedEvidences);
   } catch (error) {
-    console.error("Error fetching evidence:", error);
-    res.status(500).json({
+    console.error('Fetch error:', error);
+    return res.status(500).json({
       success: false,
-      message: "Failed to fetch evidence",
-      error: error.message,
+      error: 'Failed to fetch evidences'
     });
   }
 });
 
 // POST route to record evidence access
-router.post("/recordAccess", async (req, res) => {
+router.post('/recordAccess', async (req, res) => {
   try {
-    const { evidenceId, ipfsHash, walletAddress } = req.body;
+    const { evidenceId, walletAddress } = req.body;
 
     if (!evidenceId || !walletAddress) {
       return res.status(400).json({
         success: false,
-        message: "Evidence ID and wallet address are required",
+        error: 'Evidence ID and wallet address are required'
       });
     }
 
-    // Find the evidence in MongoDB
-    const evi = await evidence.findOne({ index: evidenceId });
-
-    if (!evi) {
+    // Verify evidence exists
+    const evidence = await Evidence.findOne({ index: evidenceId });
+    if (!evidence) {
       return res.status(404).json({
         success: false,
-        message: "Evidence not found",
+        error: 'Evidence not found'
       });
     }
 
     // Record access on blockchain
-    const contract = await getEvidenceContract();
+    const result = await blockchainService.recordAccess(evidenceId, walletAddress);
 
-    // Call the recordAccess method on the smart contract
-    const transaction = await contract.methods.recordAccess(evidenceId).send({
-      from: walletAddress,
-      gas: process.env.GAS_LIMIT || 3000000,
-    });
-
-    // Create an access log schema and model if you decide to store logs in MongoDB
-    // For now, we're just recording on the blockchain
-
-    res.status(200).json({
+    return res.json({
       success: true,
-      message: "Access recorded successfully",
-      transactionHash: transaction.transactionHash,
+      message: 'Access recorded successfully',
+      transactionHash: result.transactionHash
     });
+
   } catch (error) {
-    console.error("Error recording access:", error);
-    res.status(500).json({
+    console.error('Access recording error:', error);
+    return res.status(500).json({
       success: false,
-      message: "Failed to record access",
-      error: error.message,
+      error: 'Failed to record access'
     });
   }
 });
 
 // GET route to fetch access logs
-router.get("/getLogs", async (req, res) => {
+router.get('/getLogs', async (req, res) => {
   try {
-    const logs = await fetchLogs(req);
+    const { evidenceId } = req.query;
+    
+    if (!evidenceId) {
+      return res.status(400).json({
+        success: false,
+        error: 'Evidence ID is required'
+      });
+    }
 
-    res.status(200).json({
+    const logs = await blockchainService.getAccessLogs(evidenceId);
+    return res.json({
       success: true,
-      evidenceId: req.query.evidenceId,
+      evidenceId,
       accessLogs: logs,
-      totalViews: logs.length,
+      totalViews: logs.length
     });
+
   } catch (error) {
-    console.error("Error fetching access logs:", error);
-    res.status(500).json({
+    console.error('Logs fetch error:', error);
+    return res.status(500).json({
       success: false,
-      message: "Failed to fetch access logs",
-      error: error.message,
-    });
-  }
-});
-
-router.get("/getEvidences", async (req, res) => {
-  try {
-    const evi = await evidence.find();
-
-    // Base IPFS gateway URL
-    const baseIPFS = "https://ipfs.io/ipfs/";
-
-    // Add fileUrl to each evidence item
-    const formattedEvidences = evi.map((item) => ({
-      ...item._doc,
-      fileUrl: `${baseIPFS}${item.ipfsHash}`,
-      date: new Date(item.timestamp).toISOString(),
-    }));
-
-    res.json(formattedEvidences);
-  } catch (err) {
-    res.status(500).json({
-      message: "Error fetching all evidences from the database",
-      error: err.message,
-    });
-  }
-});
-
-router.get("/allEvidences", async (req, res) => {
-  try {
-    const evi = await evidence.find().sort({ timestamp: -1 }).limit(10);
-    const formattedEvidences = evi.map((item) => ({
-      ...item._doc,
-      fileUrl: `https://ipfs.io/ipfs/${item.ipfsHash}`,
-      date: new Date(item.timestamp).toISOString(),
-    }));
-    res.json(formattedEvidences);
-  } catch (err) {
-    res.status(500).json({
-      message: "Error fetching evidences from the database",
-      error: err.message,
+      error: 'Failed to fetch access logs'
     });
   }
 });

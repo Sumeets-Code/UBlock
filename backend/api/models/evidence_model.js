@@ -6,7 +6,8 @@ const evidenceSchema = new mongoose.Schema({
     timestamp : {type: String},
     ipfsHash : {type: String, required: true},
     fileType : {type: String, required: true},
-    description: {type: String},
+    fileCategory: {type: String, required: true},
+    description: {type: String, required: true, unique: true },
     fileSize: {type: String, required: true},
 });
 

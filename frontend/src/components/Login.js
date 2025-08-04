@@ -21,6 +21,7 @@ const Login = () => {
       console.log("Backend response:", response.data); // Debug log
 
       const {
+        profilePhoto,
         role,
         username,
         email: resEmail,
@@ -34,6 +35,7 @@ const Login = () => {
       const cleanRole = role ? role.toLowerCase() : "";
 
       const user = {
+        profilePhoto,
         role: cleanRole,
         username,
         email: resEmail || email,

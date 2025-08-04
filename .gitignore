@@ -131,6 +131,8 @@ dist
 # Personal Files that are not to be included in the github
 docs/architecture.md
 tests
+backend/api/services
+frontend/src/services
 # backend/api/Downloads
 
 # yarn v2

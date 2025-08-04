@@ -1,10 +1,17 @@
 import express from 'express';
+import multer from 'multer';
 import ldata from '../models/user_model.js';
 import sendEmail from '../../email_service/sendEmail.js';
 import argon2 from 'argon2';
-import { fetchLogs } from '../middleware/helperFunc.js';
+import fs from 'node:fs';
+import path from 'node:path';
 
 const router = express.Router();
+const upload = multer({ 
+    dest: 'uploads/',
+    limits: { fileSize: 5 * 1024 * 1024 },  // 5MB
+ });
+
 
 // Signup Route
 router.post('/signup', async (req, res) => {
@@ -57,34 +64,57 @@ router.post("/signin", async (req, res) => {
     }
 });
 
-router.post('/update', async (req, res) => {
-    const data = req.body;
+router.post('/update', upload.single('profilePic'), async (req, res) => {
+  try {
+    const { email, name, phone, rank, department, employeeId } = req.body;
+    
+    const updateData = {
+      username: name,
+      contact: phone,
+      rank,
+      department,
+      employeeId
+    };
 
-    try {
-        const user = await ldata.findOne({ email: data.email });
-
-        // Check if user exists
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-        await ldata.updateOne(
-            { email: user.email },
-            { $set : {
-                photo: data.photo,
-                username: data.name,
-                contact: data.phone,
-                rank: data.rank,
-                department: data.department,
-                employeeId:data.employeeId,
-            }}
-        )
-
-        res.status(200).json({ message: 'User updated successfully', user });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Server error', error });
+    // Handle profile photo upload if exists
+    if (req.file) {
+      updateData.profilePhoto = {
+        data: fs.readFileSync(req.file.path),
+        contentType: req.file.mimetype
+      };
+      // Remove temp file
+        setTimeout(() => {
+            fs.unlinkSync(`./uploads/${req.file.path}`)
+        }, 2000);
     }
+
+    // Use either User or ldata - they should be the same model
+    const updatedUser = await ldata.findOneAndUpdate(
+      { email },
+      updateData,
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Convert binary image to base64 for frontend
+    const userResponse = updatedUser.toObject();
+    if (userResponse.profilePhoto && userResponse.profilePhoto.data) {
+      userResponse.profilePic = `data:${userResponse.profilePhoto.contentType};base64,${userResponse.profilePhoto.data.toString('base64')}`;
+      delete userResponse.profilePhoto;
+    }
+
+    res.status(200).json({ 
+      message: 'Profile updated successfully',
+      user: userResponse
+    });
+
+  } catch (error) {
+    console.error('Update error:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
 });
 
 export default router;

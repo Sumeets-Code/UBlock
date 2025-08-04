@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./ManageEvidence.module.css";
 import axios from "axios";
 import Web3 from "web3";
+import { initializeWeb3, registerEvidence } from '../../services/blockchain';
 
 function ManageEvidence() {
   // State Management
@@ -172,8 +173,12 @@ function ManageEvidence() {
       
       // Check if upload was successful
       if (response.data && response.data.success) {
-        const { ipfsHash, transactionHash } = response.data;
+        const { ipfsHash, fileType } = response.data;
         
+        const tx = await registerEvidence(web3, ipfsHash, fileType);
+      
+        console.log("Transaction successful:", tx.transactionHash);
+
         // Update the evidence item with IPFS and blockchain information
         setEvidenceItems(prev => 
           prev.map(item => 
@@ -181,8 +186,8 @@ function ManageEvidence() {
               ? { 
                   ...item, 
                   file: previewUrl,
-                  ipfsHash,
-                  transactionHash,
+                  ipfsHash: ipfsHash,
+                  transactionHash: tx.transactionHash,
                   status: "Secured"
                 } 
               : item

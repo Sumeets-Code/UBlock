@@ -5,45 +5,69 @@ import styles from "./UpdateProfile.module.css";
 
 const UpdateProfile = () => {
   const navigate = useNavigate();
-
-  const storedUser = JSON.parse(localStorage.getItem("user")) || {};
+  const storedUser = JSON.parse(localStorage.getItem("user")) || {}; // get user data from local storage
+  const [profilePic, setProfilePic] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(storedUser.profilePic || "");
 
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    rank: "",
-    department: "",
-    employeeId: "",
+    name: storedUser.username || "",
+    email: storedUser.email || "",
+    phone: storedUser.contact || "",
+    rank: storedUser.rank || "",
+    department: storedUser.department || "",
+    employeeId: storedUser.e_id || "",
   });
-
-  useEffect(() => {
-    setFormData({
-      name: storedUser.username || "",
-      email: storedUser.email || "",
-      phone: storedUser.contact || "",
-      rank: storedUser.rank || "",
-      department: storedUser.deparment || "",
-      employeeId: storedUser.e_id || "",
-    });
-  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleProfilePicChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setProfilePic(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewUrl(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3300/update", formData);
-      console.log("Profile updated:", response.data);
-      navigate("/forensic");
+      const formDataToSend = new FormData();
+      
+      // Append all form fields
+      Object.entries(formData).forEach(([key, value]) => {
+        formDataToSend.append(key, value);
+      });
+      
+      // Append profile picture if selected
+      if (profilePic) {
+        formDataToSend.append('profilePic', profilePic);
+      }
+
+      const response = await axios.post("http://localhost:3300/update", formDataToSend, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      // Update local storage with new data
+      const updatedUser = {
+        ...storedUser, 
+        ...formData,
+        profilePic: previewUrl 
+      };
+      console.log(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+
+      navigate("/forensic", {state: updatedUser});
     } catch (error) {
-      console.error("Error updating profile:", error);
+      console.error("Update error:", error);
       alert("Update failed. Please try again.");
     }
   };
@@ -55,6 +79,23 @@ const UpdateProfile = () => {
       </header>
 
       <form className={styles.form} onSubmit={handleSubmit}>
+        <label>Photo: </label>
+        <div className={styles.profilePicContainer}>
+          {previewUrl && (
+            <img 
+              src={previewUrl} 
+              alt="Profile Preview" 
+              className={styles.profilePicPreview}
+            />
+          )}
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleProfilePicChange}
+            className={styles.fileInput}
+          />
+        </div>
+
         <label>Name:</label>
         <input
           type="text"
