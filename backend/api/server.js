@@ -26,7 +26,7 @@ const apiLimter = rateLimit({
 
 app.use(cors());
 
-app.use( authRoutes , apiLimter);
+app.use( '/auth' , authRoutes , apiLimter);
 app.use( evidenceRoutes );
 
 app.listen(port, async () => {
