@@ -9,6 +9,14 @@ updates:
       - "dependencies"
       - "javascript"
 
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "frontend"
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
