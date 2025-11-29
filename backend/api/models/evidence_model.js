@@ -11,6 +11,6 @@ const evidenceSchema = new mongoose.Schema({
     fileSize: {type: String, required: true},
 });
 
-const evidence = mongoose.model('evidences', evidenceSchema);
+const Evidence = mongoose.model('evidences', evidenceSchema);
 
-export default evidence;
+export default Evidence;

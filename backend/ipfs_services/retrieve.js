@@ -36,9 +36,6 @@ async function convertFile(filePath, outputFormat) {
     const fileExtension = path.extname(filePath);
     const outputFile = `./Downloads/${path.basename(filePath, fileExtension)}${outputFormat}`;      // Path of the retrieved file
 
-    // console.log(`File extension: ${fileExtension}`);
-    // console.log(`Attempting to convert to format: ${outputFormat}`);
-
     try {
         if (['.jpg', '.jpeg', '.png', '.gif'].includes(outputFormat)) {
             // Convert image

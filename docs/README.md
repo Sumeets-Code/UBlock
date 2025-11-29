@@ -10,7 +10,7 @@ In case of unauthorized access, the system captures a **photo of the intruder**,
 - **Immutable Blockchain Ledger** – Ensures that evidence records cannot be altered or deleted.
 - **Decentralized Storage with IPFS** – Stores large files securely and makes them accessible only to authorized personnel.
 - **Intruder Detection** – Captures photos upon unauthorized access attempts.
-- **AI/ML Criminal Record Check** – Uses facial recognition to match intruder photos with a criminal database.
+- **AI/ML Criminal Record Check** – Uses facial recognition to match intruder photos with a criminal database and Face Lock feature.
 - **Real-Time Alerts** – Notifies security authorities in case of a security breach.
 - **Role-Based Access Control** – Only authorized users can view or upload evidence.
 
@@ -45,7 +45,7 @@ In case of unauthorized access, the system captures a **photo of the intruder**,
 
 ## 📌 Project Architecture
 
-````mermaid
+```mermaid
 evidence-protection-system/
 ├── backend/
 │   ├── api/                         # Express-based API service
@@ -98,7 +98,7 @@ evidence-protection-system/
 │   └── blockchain_tests/
 └── docker-compose.yml               # Container orchestration for multi-service setup
 
-````
+```
 
 ---
 
@@ -191,22 +191,14 @@ This project is licensed under the **MIT License**.
 
 ## 🤝 Contributors
 
-* **Your Name** – Lead Developer
-* **Team Members** – Blockchain, AI/ML, and Security
-
+* **Sumeet Bhagat** – Lead Developer
+* **Shreyash Gardi & Bhanavi Pandey** – Frontend Development
+* **Anoushka Ingle** - Security and Testing
 ---
 
 ## 📬 Contact
 
 For queries, reach out at:
 📧 **[sumeetbhagat1811@gmail.com](mailto:sumeetbhagat1811@gmail.com)**
-🔗 [LinkedIn](https://linkedin.com/in/yourprofile)
+🔗 [LinkedIn](https://www.linkedin.com/in/sumeet-bhagat-2b4098251)
 
----
-
-```
-
----
-
-If you want, I can also create **GitHub repo badges** and a **visually appealing banner** for the top of the README so it looks like a professional open-source project. That would make it stand out.
-```

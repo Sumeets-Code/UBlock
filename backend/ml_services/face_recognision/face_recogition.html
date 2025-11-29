@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Face Recognition Webcam Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        #webcam {
+            border: 2px solid #333;
+            border-radius: 8px;
+            background: #000;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            background: #007bff;
+            color: white;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        #status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <h1>Face Recognition Webcam Test</h1>
+    
+    <video id="webcam" width="640" height="480" autoplay playsinline></video>
+    
+    <div id="status" class="info">Click "Start Webcam" to begin</div>
+    
+    <div>
+        <button id="startBtn" onclick="startWebcam()">Start Webcam</button>
+        <button id="stopBtn" onclick="stopWebcam()" disabled>Stop Webcam</button>
+        <button id="registerBtn" onclick="captureAndRegister()" disabled>Register Face</button>
+        <button id="recognizeBtn" onclick="captureAndRecognize()" disabled>Recognize Face</button>
+        <button onclick="listFaces()">List Faces</button>
+    </div>
+    
+    <div id="result"></div>
+
+    <script>
+        class WebcamCapture {
+            constructor(videoElementId) {
+                this.videoElement = document.getElementById(videoElementId);
+                this.stream = null;
+                this.isMirrored = true; // Default to mirrored
+        
+                // Apply mirror effect by default
+                this.videoElement.style.transform = 'scaleX(-1)';
+            }
+
+            async start() {
+                try {
+                    // Check browser support
+                    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                        throw new Error('Browser does not support camera access');
+                    }
+
+                    // Stop existing stream
+                    this.stop();
+
+                    // Request camera access
+                    this.stream = await navigator.mediaDevices.getUserMedia({ 
+                        video: { 
+                            width: { ideal: 640 },
+                            height: { ideal: 480 },
+                            facingMode: 'user'
+                        },
+                        audio: false
+                    });
+                    
+                    this.videoElement.srcObject = this.stream;
+                    this.isActive = true;
+                    
+                    // Wait for video to be ready
+                    await new Promise((resolve, reject) => {
+                        const timeout = setTimeout(() => {
+                            reject(new Error('Camera timeout - video not loading'));
+                        }, 5000);
+
+                        this.videoElement.onloadedmetadata = () => {
+                            clearTimeout(timeout);
+                            this.videoElement.play().then(resolve).catch(reject);
+                        };
+                    });
+                    
+                    updateStatus('Webcam started successfully!', 'success');
+                    updateButtons(true);
+                    this.setMirror(this.isMirrored);
+                                
+                    return true;                    
+                } catch (error) {
+                    console.error('Error starting webcam:', error);
+                    this.handleError(error);
+                    updateStatus('Failed to start webcam: ' + error.message, 'error');
+                    return false;
+                }
+            }
+
+            stop() {
+                if (this.stream) {
+                    this.stream.getTracks().forEach(track => track.stop());
+                    this.stream = null;
+                }
+                this.videoElement.srcObject = null;
+                this.isActive = false;
+                updateButtons(false);
+                updateStatus('Webcam stopped', 'info');
+            }
+
+            handleError(error) {
+                let message = 'Unknown error occurred';
+                
+                switch (error.name) {
+                    case 'NotAllowedError':
+                        message = 'Camera permission denied. Please allow camera access and refresh the page.';
+                        break;
+                    case 'NotFoundError':
+                        message = 'No camera found. Please check your camera connection.';
+                        break;
+                    case 'NotSupportedError':
+                        message = 'Camera not supported in this browser.';
+                        break;
+                    case 'NotReadableError':
+                        message = 'Camera is already in use by another application.';
+                        break;
+                    default:
+                        message = error.message;
+                }
+                
+                alert('Camera Error: ' + message);
+            }
+
+            isReady() {
+                return this.isActive && this.videoElement.readyState >= 2;
+            }
+
+            // Toggle mirror effect
+            toggleMirror() {
+                this.isMirrored = !this.isMirrored;
+                this.setMirror(this.isMirrored);
+                return this.isMirrored;
+            }
+
+            // Set mirror state
+            setMirror(mirror) {
+                this.isMirrored = mirror;
+                if (mirror) {
+                    this.videoElement.style.transform = 'scaleX(-1)';
+                } else {
+                    this.videoElement.style.transform = 'none';
+                }
+            }
+
+            captureImage() {
+                if (!this.isActive) {
+                    throw new Error('Webcam is not active');
+                }
+
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                
+                canvas.width = this.videoElement.videoWidth;
+                canvas.height = this.videoElement.videoHeight;
+                
+                // Mirror the captured image if mirroring is enabled
+                if (this.isMirrored) {
+                    context.translate(canvas.width, 0);
+                    context.scale(-1, 1);
+                }
+                
+                context.drawImage(this.videoElement, 0, 0, canvas.width, canvas.height);
+                
+                return canvas.toDataURL('image/jpeg', 0.8);
+            }
+
+        }
+
+        // Global variables
+        const webcam = new WebcamCapture('webcam');
+        const client = new FaceRecognitionClient();
+
+        // UI functions
+        function updateStatus(message, type) {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = message;
+            statusEl.className = type;
+        }
+
+        function updateButtons(webcamActive) {
+            document.getElementById('startBtn').disabled = webcamActive;
+            document.getElementById('stopBtn').disabled = !webcamActive;
+            document.getElementById('registerBtn').disabled = !webcamActive;
+            document.getElementById('recognizeBtn').disabled = !webcamActive;
+        }
+
+        function showResult(message, isError = false) {
+            const resultEl = document.getElementById('result');
+            resultEl.innerHTML = `<p style="color: ${isError ? 'red' : 'green'}">${message}</p>`;
+        }
+
+        // Main functions
+        async function startWebcam() {
+            await webcam.start();
+        }
+
+        function stopWebcam() {
+            webcam.stop();
+        }
+
+        async function captureAndRegister() {
+            const name = prompt('Enter name for registration:');
+            if (!name) return;
+
+            try {
+                updateStatus('Capturing image...', 'info');
+                const base64Image = webcam.captureImage();
+                
+                updateStatus('Registering face...', 'info');
+                const result = await client.registerFaceBase64(name, base64Image);
+                
+                showResult(`Success: ${result.message}`);
+                updateStatus('Face registered successfully!', 'success');
+                
+            } catch (error) {
+                showResult(`Error: ${error.message}`, true);
+                updateStatus('Registration failed', 'error');
+            }
+        }
+
+        async function captureAndRecognize() {
+            try {
+                updateStatus('Capturing image...', 'info');
+                const base64Image = webcam.captureImage();
+                
+                updateStatus('Recognizing face...', 'info');
+                const result = await client.recognizeFaceBase64(base64Image);
+                
+                if (result.recognized_faces && result.recognized_faces.length > 0) {
+                    const faces = result.recognized_faces.map(face => 
+                        `${face.name} (${(face.confidence * 100).toFixed(1)}% confidence)`
+                    ).join('<br>');
+                    
+                    showResult(`Recognized:<br>${faces}`);
+                    updateStatus('Recognition completed', 'success');
+                } else {
+                    showResult('No faces recognized');
+                    updateStatus('No faces detected', 'info');
+                }
+                
+            } catch (error) {
+                showResult(`Error: ${error.message}`, true);
+                updateStatus('Recognition failed', 'error');
+            }
+        }
+
+        async function listFaces() {
+            try {
+                const result = await client.listFaces();
+                if (result.faces && result.faces.length > 0) {
+                    const faces = result.faces.map(face => 
+                        `${face.name} - Registered: ${new Date(face.registered_at).toLocaleDateString()}`
+                    ).join('<br>');
+                    
+                    showResult(`Registered Faces:<br>${faces}`);
+                } else {
+                    showResult('No faces registered yet');
+                }
+            } catch (error) {
+                showResult(`Error: ${error.message}`, true);
+            }
+        }
+    </script>
+
+    <!-- Include your FaceRecognitionClient class here -->
+    <script>
+        class FaceRecognitionClient {
+            constructor(baseUrl = 'http://localhost:8000') {
+                this.baseUrl = baseUrl;
+            }
+
+            async registerFaceBase64(name, base64Image) {
+                const response = await fetch(`${this.baseUrl}/register-base64`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, image_data: base64Image })
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Registration failed');
+                }
+                
+                return await response.json();
+            }
+
+            async recognizeFaceBase64(base64Image, threshold = 0.4) {
+                const response = await fetch(`${this.baseUrl}/recognize-base64`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ image_data: base64Image, threshold })
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Recognition failed');
+                }
+                
+                return await response.json();
+            }
+
+            async listFaces() {
+                const response = await fetch(`${this.baseUrl}/faces`);
+                if (!response.ok) throw new Error('Failed to fetch faces');
+                return await response.json();
+            }
+        }
+    </script>
+</body>
+</html>

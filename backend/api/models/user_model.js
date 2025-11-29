@@ -15,6 +15,6 @@ const userLoginSchema = new mongoose.Schema({
     employeeId: {type: String}
 }, {timestamps: true});
 
-const ldata = mongoose.model('userlogin', userLoginSchema);
+const User = mongoose.model('userlogin', userLoginSchema);
 
-export default ldata;
+export default User;
