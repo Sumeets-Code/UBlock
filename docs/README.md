@@ -1,5 +1,19 @@
 # 🛡️ Evidence Management System powered by Blockchain & AI/ML
 
+<p align="center">
+  <a href="https://github.com/Sumeets-Code/UBlock/stargazers">
+    <img src="https://img.shields.io/github/stars/Sumeets-Code/UBlock?style=for-the-badge&logo=github" alt="GitHub stars"/>
+  </a>
+  <a href="https://github.com/Sumeets-Code/UBlock/network/members">
+    <img src="https://img.shields.io/github/forks/Sumeets-Code/UBlock?style=for-the-badge&logo=github" alt="GitHub forks"/>
+  </a>
+  <a href="https://github.com/Sumeets-Code/UBlock/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/Sumeets-Code/UBlock?style=for-the-badge" alt="License"/>
+  </a>
+  <img src="https://img.shields.io/badge/Blockchain-Ethereum-blue?style=for-the-badge&logo=ethereum" alt="Blockchain Ethereum"/>
+  <img src="https://img.shields.io/badge/AI-ML-green?style=for-the-badge&logo=python" alt="AI ML"/>
+</p>
+
 A **secure, tamper-proof, and intelligent evidence management platform** that leverages **Blockchain technology** for integrity, **IPFS** for decentralized storage, and **AI/ML** for real-time intruder identification.  
 In case of unauthorized access, the system captures a **photo of the intruder**, checks **criminal records**, and alerts the authorities.
 
@@ -45,8 +59,8 @@ In case of unauthorized access, the system captures a **photo of the intruder**,
 
 ## 📌 Project Architecture
 
-````mermaid
-evidence-protection-system/
+```bash
+UBlock/
 ├── backend/
 │   ├── api/                         # Express-based API service
 │   │   ├── server.js                # Entry point for Express server
@@ -98,7 +112,7 @@ evidence-protection-system/
 │   └── blockchain_tests/
 └── docker-compose.yml               # Container orchestration for multi-service setup
 
-````
+```
 
 ---
 
@@ -108,7 +122,7 @@ evidence-protection-system/
 
    ```bash
    git clone https://github.com/Sumeets-Code/UBlock.git
-   cd evidence-management-system
+   cd UBlock
    ```
 
 2. **Install Dependencies**
@@ -191,8 +205,9 @@ This project is licensed under the **MIT License**.
 
 ## 🤝 Contributors
 
-* **Your Name** – Lead Developer
-* **Team Members** – Blockchain, AI/ML, and Security
+* **Sumeet Bhagat** – Backend Development
+* **Shreyash Gardi & Bhanavi Pandey** – Frontend Development
+* **Anoushka Ingle** - Testing
 
 ---
 
@@ -200,13 +215,4 @@ This project is licensed under the **MIT License**.
 
 For queries, reach out at:
 📧 **[sumeetbhagat1811@gmail.com](mailto:sumeetbhagat1811@gmail.com)**
-🔗 [LinkedIn](https://linkedin.com/in/yourprofile)
-
----
-
-```
-
----
-
-If you want, I can also create **GitHub repo badges** and a **visually appealing banner** for the top of the README so it looks like a professional open-source project. That would make it stand out.
-```
+🔗 [LinkedIn](https://www.linkedin.com/in/sumeet-bhagat-2b4098251)
