@@ -59,7 +59,7 @@ In case of unauthorized access, the system captures a **photo of the intruder**,
 
 ## System Design
 
-![System Design](docs/assets/sd.png)
+![System Design Diagram](./assets/sd.png)
 
 ## 📌 Project Architecture
 
