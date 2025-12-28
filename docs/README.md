@@ -57,6 +57,10 @@ In case of unauthorized access, the system captures a **photo of the intruder**,
 - MongoDB / PostgreSQL
 
 
+## System Design
+
+![System Design](docs/assets/sd.png)
+
 ## 📌 Project Architecture
 
 ```bash
@@ -193,7 +197,7 @@ The AI/ML module:
 
 | Unauthorized Access Detected           | Evidence Blockchain Record                      |
 | -------------------------------------- | ----------------------------------------------- |
-| ![Intruder Capture](docs/intruder.jpg) | ![Blockchain Proof](docs/blockchain_record.jpg) |
+| ![Intruder Capture](docs/assets/sd.png) | ![Blockchain Proof](docs/blockchain_record.jpg) |
 
 ---
 
