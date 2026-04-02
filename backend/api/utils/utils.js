@@ -1,7 +1,9 @@
 import multer from 'multer';
 import rateLimit from 'express-rate-limit';
-import Web3 from 'web3';
 import dotenv from 'dotenv';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import fs from 'node:fs';
 dotenv.config();
 
 export const getFileCategory = (extension) => {
@@ -17,17 +19,33 @@ export const getFileCategory = (extension) => {
   return 'other';
 };
 
-export const uploads = multer({
-  dest: '/uploads',
-  limits: {
-    fileSize: 100 * 1024 * 1024 // 100MB limit (adjust as needed)
+
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const UPLOAD_DIR = path.join(__dirname, '..', 'uploads');
+if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+
+// ── Multer: disk storage so we keep the file path ────────────────────────────
+const storage = multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, UPLOAD_DIR),
+  filename: (_req, file, cb) => {
+    const unique = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+    cb(null, `${unique}${path.extname(file.originalname)}`);
   },
-  fileFilter: (req, file, cb) => {
-    cb(null, true);
-  }
 });
 
-export const apiLimter = rateLimit({
+export const uploads = multer({
+  storage,
+  limits: { fileSize: 100 * 1024 * 1024 }, // 100 MB
+  fileFilter: (_req, file, cb) => {
+    // Accept everything — the frontend already limits types
+    cb(null, true);
+  },
+});
+
+
+export const apiLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     limit: 45, // Limit each IP to 45 requests per `window` (here, per 15 minutes).
     standardHeaders: 'draft-8', // draft-6: `RateLimit-*` headers; draft-7 & draft-8: combined `RateLimit` header
@@ -35,37 +53,11 @@ export const apiLimter = rateLimit({
     // store: ... , // Redis, Memcached, etc. See below.
 });
 
-export const getEvidenceContract = async () => {    
-    try {
-        // Establish connection to the Ethereum network
-        const web3 = new Web3(new Web3.providers.HttpProvider(process.env.SEPOLIA_URL));
-        
-        try {
-            // Parse ABI from environment variable
-            const contractABI = process.env.CONTRACT_ABI;
-            
-            // Validate ABI is an array
-            if (!Array.isArray(contractABI)) {
-                throw new Error('Parsed ABI is not an array');
-            }
-        } catch (abiError) {
-            console.error('Error parsing contract ABI:', abiError);
-            console.error('Raw ABI value:', process.env.CONTRACT_ABI);
-            throw new Error('Failed to parse CONTRACT_ABI from environment variables');
-        }
-        
-        // Validate contract address
-        const contractAddress = process.env.CONTRACT_ADDRESS;
-        if (!contractAddress || !web3.utils.validateResponse(contractAddress)) {
-            throw new Error('Invalid or missing contract address');
-        }
-        
-        // Create and return the contract instance
-        return new web3.eth.Contract(contractABI, contractAddress);
-    } catch (error) {
-        console.error('Error initializing contract:', error);
-        throw error;
-    }
-};
-
+export const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 20,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+  message: { message: 'Too many login attempts, please try again later.' },
+});
 
