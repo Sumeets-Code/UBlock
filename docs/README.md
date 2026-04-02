@@ -1,5 +1,19 @@
 # 🛡️ Evidence Management System powered by Blockchain & AI/ML
 
+<p align="center">
+  <a href="https://github.com/Sumeets-Code/UBlock/stargazers">
+    <img src="https://img.shields.io/github/stars/Sumeets-Code/UBlock?style=for-the-badge&logo=github" alt="GitHub stars"/>
+  </a>
+  <a href="https://github.com/Sumeets-Code/UBlock/network/members">
+    <img src="https://img.shields.io/github/forks/Sumeets-Code/UBlock?style=for-the-badge&logo=github" alt="GitHub forks"/>
+  </a>
+  <a href="https://github.com/Sumeets-Code/UBlock/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/Sumeets-Code/UBlock?style=for-the-badge" alt="License"/>
+  </a>
+  <img src="https://img.shields.io/badge/Blockchain-Ethereum-blue?style=for-the-badge&logo=ethereum" alt="Blockchain Ethereum"/>
+  <img src="https://img.shields.io/badge/AI-ML-green?style=for-the-badge&logo=python" alt="AI ML"/>
+</p>
+
 A **secure, tamper-proof, and intelligent evidence management platform** that leverages **Blockchain technology** for integrity, **IPFS** for decentralized storage, and **AI/ML** for real-time intruder identification.  
 In case of unauthorized access, the system captures a **photo of the intruder**, checks **criminal records**, and alerts the authorities.
 
@@ -43,10 +57,14 @@ In case of unauthorized access, the system captures a **photo of the intruder**,
 - MongoDB / PostgreSQL
 
 
+## System Design
+
+![System Design Diagram](./assets/sd.png)
+
 ## 📌 Project Architecture
 
-```mermaid
-evidence-protection-system/
+```bash
+UBlock/
 ├── backend/
 │   ├── api/                         # Express-based API service
 │   │   ├── server.js                # Entry point for Express server
@@ -108,7 +126,7 @@ evidence-protection-system/
 
    ```bash
    git clone https://github.com/Sumeets-Code/UBlock.git
-   cd evidence-management-system
+   cd UBlock
    ```
 
 2. **Install Dependencies**
@@ -179,7 +197,7 @@ The AI/ML module:
 
 | Unauthorized Access Detected           | Evidence Blockchain Record                      |
 | -------------------------------------- | ----------------------------------------------- |
-| ![Intruder Capture](docs/intruder.jpg) | ![Blockchain Proof](docs/blockchain_record.jpg) |
+| ![Intruder Capture](docs/assets/sd.png) | ![Blockchain Proof](docs/blockchain_record.jpg) |
 
 ---
 
@@ -191,14 +209,22 @@ This project is licensed under the **MIT License**.
 
 ## 🤝 Contributors
 
-* **Sumeet Bhagat** – Lead Developer
-* **Shreyash Gardi & Bhanavi Pandey** – Frontend Development
-* **Anoushka Ingle** - Security and Testing
+* **Your Name** – Lead Developer
+* **Team Members** – Blockchain, AI/ML, and Security
+
 ---
 
 ## 📬 Contact
 
 For queries, reach out at:
 📧 **[sumeetbhagat1811@gmail.com](mailto:sumeetbhagat1811@gmail.com)**
-🔗 [LinkedIn](https://www.linkedin.com/in/sumeet-bhagat-2b4098251)
+🔗 [LinkedIn](https://linkedin.com/in/yourprofile)
 
+---
+
+```
+
+---
+
+If you want, I can also create **GitHub repo badges** and a **visually appealing banner** for the top of the README so it looks like a professional open-source project. That would make it stand out.
+```
