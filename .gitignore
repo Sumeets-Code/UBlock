@@ -135,9 +135,6 @@ tests
 # Backend
 ackend/ml_services
 backend/email_service/
-backend/blockchain
-backend/api/middleware/recordAccess.js
-backend/api/controller/logs.controller.js
 
 # yarn v2
 .yarn/cache

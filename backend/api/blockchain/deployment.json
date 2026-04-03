@@ -1,0 +1,354 @@
+{
+  "network": "sepolia",
+  "contractAddress": "0x2c9AD30036A85d3CcEA72047BdF32EaB7d5b7B1E",
+  "deployedBy": "0x436E4Bb3a86587569cD3Aba30892d6397CE305b1",
+  "deployedAt": "2026-04-03T08:27:23.316Z",
+  "abi": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "evidenceId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "actor",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "action",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "detail",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "timestamp",
+          "type": "uint64"
+        }
+      ],
+      "name": "CustodyEvent",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "evidenceId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "ipfsHash",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "uploadedBy",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "mongoId",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "fileType",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "timestamp",
+          "type": "uint64"
+        }
+      ],
+      "name": "EvidenceRegistered",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "op",
+          "type": "address"
+        }
+      ],
+      "name": "addOperator",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "evidenceId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "deletedBy",
+          "type": "string"
+        }
+      ],
+      "name": "deleteEvidence",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "evidenceCount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "evidences",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "ipfsHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "uploadedBy",
+          "type": "address"
+        },
+        {
+          "internalType": "uint64",
+          "name": "uploadedAt",
+          "type": "uint64"
+        },
+        {
+          "internalType": "uint64",
+          "name": "lastUpdatedAt",
+          "type": "uint64"
+        },
+        {
+          "internalType": "bool",
+          "name": "deleted",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "evidenceId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getEvidence",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "ipfsHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "uploadedBy",
+          "type": "address"
+        },
+        {
+          "internalType": "uint64",
+          "name": "uploadedAt",
+          "type": "uint64"
+        },
+        {
+          "internalType": "uint64",
+          "name": "lastUpdatedAt",
+          "type": "uint64"
+        },
+        {
+          "internalType": "bool",
+          "name": "deleted",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "operators",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "evidenceId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "actor",
+          "type": "string"
+        }
+      ],
+      "name": "recordAccess",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "evidenceId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "action",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "detail",
+          "type": "string"
+        }
+      ],
+      "name": "recordCustodyEvent",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "ipfsHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "string",
+          "name": "mongoId",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "fileType",
+          "type": "string"
+        }
+      ],
+      "name": "registerEvidenceByUser",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "evidenceId",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "op",
+          "type": "address"
+        }
+      ],
+      "name": "removeOperator",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "evidenceId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "ipfsHash",
+          "type": "bytes32"
+        }
+      ],
+      "name": "verifyIntegrity",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ]
+}
