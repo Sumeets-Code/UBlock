@@ -1,17 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { useToast } from '../context/ToastProvider.jsx';
+import { useAuth } from '../context/AuthProvider.jsx';
 import { fmt, formatFileSize, getCategoryIcon } from '../utils/api.js';
 import API from '../utils/api.js';
 import { MOCK_EVIDENCE } from '../utils/mockData.js';
 
 
 function EvidenceDetailPage({ id, setPage }) {
+  const { user } = useAuth();
   const [evidence, setEvidence] = useState(null);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState('overview');
   const [showStatusModal, setShowStatusModal] = useState(false);
-  const [statusUpdate, setStatusUpdate] = useState({ status: '', notes: '', officer: '' });
   const toast = useToast();
+  const [statusUpdate, setStatusUpdate] = useState({ 
+    status: '', 
+    notes: '', 
+    officer: user?.name || '', 
+  });
 
 
 
@@ -181,7 +187,7 @@ function EvidenceDetailPage({ id, setPage }) {
               </div>
               <div className="form-group">
                 <label className="form-label">Officer Name *</label>
-                <input className="form-control" placeholder="Your name" value={statusUpdate.officer} onChange={e => setStatusUpdate({ ...statusUpdate, officer: e.target.value })} />
+                <input className="form-control" placeholder="Your name" value={statusUpdate.officer} onChange={e => setStatusUpdate({ ...statusUpdate, officer: e.target.value })} readOnly/>
               </div>
               <div className="form-group">
                 <label className="form-label">Notes</label>

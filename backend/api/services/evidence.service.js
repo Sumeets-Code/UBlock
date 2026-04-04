@@ -82,9 +82,9 @@ const createEvidence = async (req) => {
     // // ── Step 3: Register on blockchain (best-effort) ───────────────────────────
     // // We don't block the response on blockchain confirmation.
     // // The evidenceId is written back to Mongo asynchronously.
-    // registerOnChain(saved, cid, ipfsHash, file.mimetype).catch((err) =>
+    // registerOnChain(savedEvidence, cid, ipfsHash, file.mimetype).catch((err) =>
     //   console.error(
-    //     `Blockchain registration failed for ${saved._id}:`,
+    //     `Blockchain registration failed for ${savedEvidence._id}:`,
     //     err.message,
     //   ),
     // );
@@ -94,7 +94,7 @@ const createEvidence = async (req) => {
       fs.unlinkSync(file.path);
     } catch {}
 
-    _registerOnChainAsync(saved, cid, ipfsHash, file.mimetype);
+    _registerOnChainAsync(savedEvidence, cid, ipfsHash, file.mimetype);
 
     return savedEvidence;
   } catch (error) {

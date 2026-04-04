@@ -21,6 +21,8 @@ router.post('/prepare-upload', authenticate, uploads.single('file'), evidenceCon
 // Step 2: frontend confirmed tx → finalise MongoDB record
 router.post('/confirm-upload', authenticate, evidenceController.handleConfirmUpload);
 
+router.post('/upload', authenticate, uploads.single('file'), evidenceController.upload);
+
 
 // CRUD
 router.get('/', authenticate, evidenceController.getAllEvidences);

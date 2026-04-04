@@ -1,8 +1,8 @@
 {
   "network": "sepolia",
-  "contractAddress": "0x2c9AD30036A85d3CcEA72047BdF32EaB7d5b7B1E",
+  "contractAddress": "0x36B571CE6974372F1BEDE0af1ff6b63a7B3F7170",
   "deployedBy": "0x436E4Bb3a86587569cD3Aba30892d6397CE305b1",
-  "deployedAt": "2026-04-03T08:27:23.316Z",
+  "deployedAt": "2026-04-04T08:44:45.778Z",
   "abi": [
     {
       "inputs": [],
