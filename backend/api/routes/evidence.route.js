@@ -7,18 +7,14 @@ import { uploads } from '../utils/utils.js';
 
 const router = express.Router();
 
-// Stats — must be registered BEFORE /:id or Express matches "stats" as an id
 router.get('/stats/overview', authenticate, evidenceController.getStats);
 
-// Logs
 router.get('/logs', authenticate, logsController.fetchLogs);
 
 
 // ── New MetaMask flow ─────────────────────────────────────────────────────────
-// Step 1: upload file to IPFS → get data for MetaMask signing
 router.post('/prepare-upload', authenticate, uploads.single('file'), evidenceController.handlePrepareUpload);
 
-// Step 2: frontend confirmed tx → finalise MongoDB record
 router.post('/confirm-upload', authenticate, evidenceController.handleConfirmUpload);
 
 router.post('/upload', authenticate, uploads.single('file'), evidenceController.upload);
@@ -28,7 +24,6 @@ router.post('/upload', authenticate, uploads.single('file'), evidenceController.
 router.get('/', authenticate, evidenceController.getAllEvidences);
 router.get('/:id', authenticate, recordAccess, evidenceController.getEvidenceById);
 
-// Frontend calls PATCH /evidence/:id/status
 router.patch('/:id/status', authenticate, evidenceController.statusUpdate);
 
 router.get('/:id/audit', authenticate, evidenceController.getAuditLog);

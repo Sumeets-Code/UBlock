@@ -3,7 +3,6 @@ import { useToast } from '../context/ToastProvider.jsx';
 import { useAuth } from '../context/AuthProvider.jsx';
 import { fmt, formatFileSize, getCategoryIcon } from '../utils/api.js';
 import API from '../utils/api.js';
-import { MOCK_EVIDENCE } from '../utils/mockData.js';
 
 
 function EvidenceDetailPage({ id, setPage }) {
@@ -18,27 +17,7 @@ function EvidenceDetailPage({ id, setPage }) {
     notes: '', 
     officer: user?.name || '', 
   });
-
-
-
-
-  // useEffect(() => {
-  //   const e = MOCK_EVIDENCE.find(x => x._id === id);
-  //   if (e) { setEvidence({ ...e }); setStatusUpdate(s => ({ ...s, status: e.status })); }
-  // }, [id]);
-
-  // const handleStatusUpdate = () => {
-  //   if (!statusUpdate.officer) return toast("Officer name required", "error");
-  //   setEvidence(ev => ({
-  //     ...ev, status: statusUpdate.status,
-  //     chainOfCustody: [...(ev.chainOfCustody || []), { action: `Status changed to ${statusUpdate.status}`, officer: statusUpdate.officer, timestamp: new Date().toISOString(), notes: statusUpdate.notes }]
-  //   }));
-  //   setShowStatusModal(false);
-  //   toast("Status updated and logged");
-  // };
-
-  // if (!evidence) return <div className="loading"><div className="spinner" /></div>;
-
+  
 
   useEffect(() => {
     // GET /api/evidence/:id  →  single evidence object with chainOfCustody

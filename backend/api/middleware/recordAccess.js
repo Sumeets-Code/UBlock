@@ -1,18 +1,6 @@
 import Evidence from '../models/evidence_model.js';
 import blockchainService from '../services/blockchain.servce.js';
 
-/**
- * recordAccess middleware
- *
- * - Verifies the evidence exists in MongoDB
- * - Attaches it to req.evidence so the controller doesn't fetch it again
- * - Logs the access on-chain (fire-and-forget so blockchain lag never
- *   blocks the HTTP response)
- */
-
-
-
-
 const recordAccess = async (req, res, next) => {
   try {
     const evidenceId = req.params.id;

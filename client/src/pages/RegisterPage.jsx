@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthProvider.jsx';
 import { useToast } from '../context/ToastProvider.jsx';
 import API from '../utils/api.js';
-import { MOCK_USER } from '../utils/mockData.js';
 
 
 function RegisterPage({ goLogin }) {
@@ -15,16 +14,7 @@ function RegisterPage({ goLogin }) {
     e.preventDefault();
     setLoading(true);
 
-    // // Testing Phase:
-    // setTimeout(() => { 
-    //   login({ ...MOCK_USER, ...form }); 
-    //   toast("Account created successfully"); 
-    // }, 800);
-    
-    // Execution Phase:
     try {
-      // POST /api/auth/register  →  { token, user }
-      // const { data } = await API.post('/auth/register', form);
       const { data } = await API.post('/auth/register', form);
       login(data.token, data.user);
       toast('Account created successfully');

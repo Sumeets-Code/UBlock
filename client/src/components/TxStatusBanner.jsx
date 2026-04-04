@@ -1,12 +1,5 @@
 import React from 'react';
 
-/**
- * TxStatusBanner
- * Shows a live status strip while the MetaMask transaction is in-flight.
- *
- * Props: { status, txHash, error }
- *   status: 'idle' | 'pending' | 'confirming' | 'confirmed' | 'error'
- */
 export const TxStatusBanner = ({ status, txHash, error }) => {
   if (status === 'idle') return null;
 

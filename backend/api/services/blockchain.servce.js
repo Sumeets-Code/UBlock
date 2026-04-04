@@ -45,8 +45,6 @@ const init = () => {
 
 
 // ── Nonce mutex — prevents "already known" / nonce collisions ─────────────────
-// All operator transactions are serialised through this queue so no two
-// concurrent requests ever use the same nonce.
 let _nonceLock = Promise.resolve();
 
 const withNonceLock = (fn) => {
@@ -72,9 +70,6 @@ const estimateWithBuffer = async (txPromise) => {
 
 
 // ── EIP-1559 gas override ─────────────────────────────────────────────────────
-// Uses provider.getFeeData() which queries eth_feeHistory and computes
-// optimal maxFeePerGas and maxPriorityFeePerGas automatically.
-// Unspent gas is refunded — only actual usage is charged.
 const getGasOverrides = async () => {
   const feeData = await _provider.getFeeData();
   return {
@@ -128,32 +123,6 @@ const registerEvidence = async (ipfsHash32, mongoId, fileType) =>
   });
 
 
-//   {
-//   try {
-//     const contract = init();
-
-//     const gasLimit = await estimateWithBuffer(
-//       contract.registerEvidenceByUser.estimateGas(ipfsHash32, mongoId, fileType)
-//     );
-
-//     const tx      = await contract.registerEvidenceByUser(ipfsHash32, mongoId, fileType, { gasLimit });
-//     const receipt = await tx.wait();
-
-//     // Parse the EvidenceRegistered event to get the on-chain evidenceId
-//     const iface = contract.interface;
-//     const log   = receipt.logs
-//       .map(l => { try { return iface.parseLog(l); } catch { return null; } })
-//       .find(l => l?.name === 'EvidenceRegistered');
-
-//     const evidenceId = log ? Number(log.args.evidenceId) : null;
-
-//     console.log(`✅ Evidence #${evidenceId} registered | tx: ${receipt.hash}`);
-//     return { evidenceId, txHash: receipt.hash };
-    
-//   } catch (error) {
-//     console.error(`RegisterEvidence Error in bcService: ${error.message}`)
-//   }
-// };
 
 
 // ── Write: record an access event (fire-and-forget safe) ─────────────────────
@@ -179,20 +148,6 @@ const recordAccess = async (onChainId, actor) => {
   });
 };
   
-//   {
-//   try {
-//     const contract = init();
-//     const gasLimit = await estimateWithBuffer(
-//       contract.recordAccess.estimateGas(onChainId, actor)
-//     );
-//     const tx = await contract.recordAccess(onChainId, actor, { gasLimit });
-//     await tx.wait();
-//     console.log(`✅ Access logged for #${onChainId} by "${actor}" | tx: ${tx.hash}`);
-//     return tx.hash;
-//   } catch (error) {
-//     console.error(`RecordAccess Error in BCService: ${error.message}`)
-//   }
-// };
 
 // ── Write: record any custody event (status change, update, etc.) ─────────────
 /**
@@ -211,22 +166,6 @@ const recordCustodyEvent = async (onChainId, action, detail) =>
     await tx.wait();
     return tx.hash;
   });
-//   {
-//   try {
-//     const contract = init();
-//     const gasLimit = await estimateWithBuffer(
-//       contract.recordCustodyEvent.estimateGas(onChainId, action, detail)
-//     );
-//     const tx = await contract.recordCustodyEvent(onChainId, action, detail, { gasLimit });
-//     await tx.wait();
-//     console.log(`✅ Custody event "${action}" for #${onChainId} | tx: ${tx.hash}`);
-//     return tx.hash;
-      
-//   } catch (error) {
-//     console.error(`RecordCustodyEvent Error in BCService: ${error.message}`)
-//   }
-// };
-
 
 
 // ── Write: soft-delete ────────────────────────────────────────────────────────
@@ -241,24 +180,6 @@ const deleteOnChain = async (onChainId, deletedBy) =>
     await tx.wait();
     return tx.hash;
   });
-
-//   {
-//   try {
-//     const contract = init();
-//     const gasLimit = await estimateWithBuffer(
-//       contract.deleteEvidence.estimateGas(onChainId, deletedBy)
-//     );
-//     const tx = await contract.deleteEvidence(onChainId, deletedBy, { gasLimit });
-//     await tx.wait();
-//     console.log(`✅ Evidence #${onChainId} soft-deleted | tx: ${tx.hash}`);
-//     return tx.hash;
-      
-//   } catch (error) {
-//     console.error(`DeleteOnChain Error in BcService: ${error.message}`)
-//   }
-// };
-
-
 
 
 // ── Read: get all custody events for one evidence item via eth_getLogs ────────

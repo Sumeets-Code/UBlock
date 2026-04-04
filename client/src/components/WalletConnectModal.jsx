@@ -2,17 +2,6 @@ import React from 'react';
 import { useWallet } from '../context/WalletProvider.jsx';
 import { useEffect } from 'react';
 
-/**
- * WalletConnectModal
- *
- * Shown before the upload form when MetaMask is not yet connected.
- * Gives the user the choice to connect (they pay gas) or skip
- * (the backend operator wallet pays gas on their behalf).
- *
- * Props:
- *   onConnected  — called after wallet is connected AND on Sepolia
- *   onSkip       — called if user chooses operator-pays mode
- */
 export const WalletConnectModal = ({ onConnected, onSkip }) => {
   const { isConnected, isCorrectNetwork, connecting, connect, switchToSepolia } = useWallet();
 
@@ -23,16 +12,7 @@ export const WalletConnectModal = ({ onConnected, onSkip }) => {
 
   const handleSwitch = async () => {
     await switchToSepolia();
-    // switchToSepolia triggers a chainChanged event → WalletProvider updates
-    // isCorrectNetwork reactively — onConnected will fire on next render
-    //   onConnected?.();
   };
-
-  // // Already connected and on correct network — auto-dismiss
-  // if (isConnected && isCorrectNetwork) {
-  //   onConnected?.();
-  //   return null;
-  // }
 
   useEffect(() => {
     if (isConnected && isCorrectNetwork) {

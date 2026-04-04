@@ -8,20 +8,6 @@ import { WalletConnectModal } from "../components/WalletConnectModal.jsx";
 import { TxStatusBanner } from "../components/TxStatusBanner.jsx";
 import API from "../utils/api.js";
 
-/**
- * UploadPage — MetaMask user-pays-gas edition
- *
- * Supports two upload modes:
- *   A. User-pays: MetaMask connected → IPFS then MetaMask signs blockchain tx
- *   B. Operator-pays: no wallet → old flow, backend operator pays gas
- *
- * Step machine:
- *   'form'        Initial form + file picker
- *   'wallet'      WalletConnectModal shown (if user clicked connect)
- *   'uploading'   File uploading to IPFS (shows spinner)
- *   'signing'     Waiting for MetaMask signature
- *   'done'        Success screen
- */
 function UploadPage({ setPage }) {
   const { user } = useAuth();
   const { account, isConnected, isCorrectNetwork } = useWallet();
@@ -176,7 +162,6 @@ function UploadPage({ setPage }) {
     reset();
   };
 
-  // ─────────────────────────────────────────────────────────────────────────
 
   return (
     <div>

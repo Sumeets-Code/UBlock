@@ -1,17 +1,6 @@
 import { useState, useCallback } from 'react';
 import { BrowserProvider, Contract } from 'ethers';
 
-/**
- * useEvidenceVault
- *
- * Thin hook wrapping the EvidenceVault contract.
- * Uses ethers.js BrowserProvider (MetaMask) — the user signs and pays.
- *
- * The ABI and contract address are injected at build time from the
- * deployment.json produced by Hardhat. Vite exposes them via
- * import.meta.env.VITE_CONTRACT_ADDRESS / VITE_CONTRACT_ABI.
- */
-
 // Minimal ABI — only the function we call from the browser
 const ABI = [
   'function registerEvidenceByUser(bytes32 ipfsHash, string mongoId, string fileType) returns (uint256)',

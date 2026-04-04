@@ -6,18 +6,7 @@ import pinataSDK from "@pinata/sdk";
 import { CID } from 'multiformats/cid';
 dotenv.config();
 
-/**
- * IPFS Service
- *
- * Uses Pinata (or any Kubo-compatible gateway) in production.
- * Falls back to a local IPFS node when PINATA_JWT is absent (dev mode).
- *
- * Cost note: Pinata free tier = 1 GB pinned storage, 100 GB bandwidth/month.
- * For evidence files you almost certainly want a paid pin so files persist.
- */
-
 // ── Client factory ────────────────────────────────────────────────────────────
-
 const uploadViaPinata = async (filePath, filename) => {
   const pinata = new pinataSDK({ pinataJWTKey: process.env.PINATA_JWT });
 
@@ -36,18 +25,6 @@ const uploadViaLocal = async (filePath, filename) => {
       path: filename,
       content: fs.readFileSync(filePath),
     });
-
-
-    // const result = await client.add(
-    //   { path: filename, content: fileBuffer },
-    //   {
-    //     cidVersion: 1, // CIDv1 uses sha2-256 by default
-    //     pin: true, // pin immediately so it isn't GC'd
-    //     wrapWithDirectory: false,
-    //   },
-    // );
-
-    // const cid = result.cid.toString();
 
     return result.cid.toString();
     
@@ -101,9 +78,7 @@ const uploadFile = async (filePath, filename) => {
 
     const ipfsHash = cidToBytes32(cid);
 
-    return { cid, ipfsHash, sha256 };
-    return { cid, ipfsHash, sha256, size: result.size };
-      
+    return { cid, ipfsHash, sha256 };      
   } catch (error) {
     console.error(`uploadFile Error: ${error.message}`)
   }
@@ -142,19 +117,6 @@ setInterval(async () => {
 }, 30000); // every 30 sec
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 // ── Retrieve a file from IPFS ─────────────────────────────────────────────────
 /**
  * @param {string} cid  Full CIDv1 string
@@ -176,34 +138,6 @@ const getGatewayUrl = (cid) => {
 };
 
 
-
-
-
-
-
-
-
-
-
-
-// ── CID → bytes32 helper ──────────────────────────────────────────────────────
-/**
- * Extracts the 32-byte sha2-256 digest from a CIDv1 multihash.
- * Returns a hex string prefixed with 0x, ready for Solidity bytes32.
- *
- * Multihash layout: <varint fn code> <varint digest len> <digest bytes>
- * For sha2-256:  fn=0x12 (2 bytes varint), len=0x20 (1 byte varint), then 32 bytes.
- */
-
-
-// const cidToBytes32 = (cid) => {
-//   // toV1 ensures CIDv1, then get the raw multihash bytes
-//   const mh = cid.toV1().multihash.bytes;
-//   // Skip the 2-byte function code varint + 1-byte length varint
-//   const digest = mh.slice(2, 34);
-//   return "0x" + Buffer.from(digest).toString("hex");
-// };
-
 // CID → bytes32
 const cidToBytes32 = (cidStr) => {
   const cid = CID.parse(cidStr).toV1();
@@ -211,17 +145,9 @@ const cidToBytes32 = (cidStr) => {
   return '0x' + Buffer.from(digest).toString('hex');
 };
 
-/**
- * Inverse: convert a bytes32 hex string back to the sha2-256 multihash prefix
- * so we can reconstruct the CID for retrieval.
- * Note: this gives you the digest; to get the full CID you also need the codec
- * (dag-pb = 0x70 for files). In practice just store the full CID string in MongoDB.
- */
 const bytes32ToCid = (hex) => {
   // Re-prefix with sha2-256 multihash header: 0x1220
   return "1220" + hex.replace("0x", "");
-
-
 };
 
 // // bytes32 → CID (for reconstruction)

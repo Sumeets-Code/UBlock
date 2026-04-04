@@ -1,17 +1,5 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
-
-/**
- * @title EvidenceVault  v2 — User-pays-gas edition
- *
- * Changes from v1:
- *  - registerEvidenceByUser() is public (no onlyOperator).
- *    Any connected wallet can register evidence and pays their own gas.
- *  - The struct stores uploadedBy = msg.sender (the user's MetaMask wallet).
- *  - Operator-only functions (recordAccess, recordCustodyEvent, deleteEvidence)
- *    remain restricted — only the backend wallet calls those.
- *  - verifyIntegrity() is public so anyone can audit without gas.
- */
 contract EvidenceVault {
     address public owner;
     mapping(address => bool) public operators;

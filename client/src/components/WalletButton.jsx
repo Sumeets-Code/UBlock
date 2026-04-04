@@ -1,13 +1,6 @@
 import React from 'react';
 import { useWallet } from '../context/WalletProvider.jsx';
 
-/**
- * WalletButton
- * Shows in the topbar. Cycles through:
- *   - "Connect Wallet"   (not connected)
- *   - "Wrong Network"    (connected but not Sepolia)
- *   - "0x1234...abcd"   (connected and correct network)
- */
 export const WalletButton = () => {
   const {
     account, isConnected, isCorrectNetwork,

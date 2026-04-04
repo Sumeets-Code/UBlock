@@ -6,15 +6,7 @@ const AuthCtx = createContext(null);
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
-
-  // useEffect(() => {
-  //     setTimeout(() => setLoading(false), 400);
-  // }, []);
-  // const login = (u) => setUser(u);
-  // const logout = () => setUser(null);
-
-
+  
   // Rehydrate session from localStorage on first load
   useEffect(() => {
     const token = localStorage.getItem('token');

@@ -27,8 +27,6 @@ const createUser = async (userData) => {
 
     const user = await User.create(data);
 
-    // await sendEmail(data.email, `Welcome! ${data.username}`, `Thank you for registering with UBLock!!`);
-
     return user;
   } catch (err) {
     console.error(`User Creation error: ${err.message}`);
@@ -105,7 +103,7 @@ const updateUserProfile = async (req) => {
         data: fs.readFileSync(req.file.path),
         contentType: req.file.mimetype,
       };
-      // Clean up the temp file after reading it
+
       try {
         fs.unlinkSync(req.file.path);
       } catch {}

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { fmt, formatFileSize, getCategoryIcon } from '../utils/api.js';
 import { useToast } from '../context/ToastProvider.jsx';
 import API from '../utils/api.js';
-import { MOCK_EVIDENCE } from '../utils/mockData.js';
 
 
 function ReportsPage() {
@@ -12,28 +11,6 @@ function ReportsPage() {
   const [loading, setLoading] = useState(false);
   const [generating, setGenerating] = useState(false);
   const toast = useToast();
-
-
-
-  // const fetchReport = () => {
-  //   if (reportType === "case" && !caseNumber.trim()) return toast("Please enter a case number", "error");
-  //   setLoading(true); setReport(null);
-  //   setTimeout(() => {
-  //     const items = reportType === "case"
-  //       ? MOCK_EVIDENCE.filter(e => e.caseNumber.toLowerCase() === caseNumber.trim().toLowerCase())
-  //       : MOCK_EVIDENCE;
-  //     if (reportType === "case" && items.length === 0) { toast("No evidence found for that case number", "error"); setLoading(false); return; }
-  //     const byCategory = items.reduce((acc, e) => { acc[e.category] = (acc[e.category] || 0) + 1; return acc; }, {});
-  //     const totalSize = items.reduce((s, e) => s + (e.fileSize || 0), 0);
-  //     setReport({ reportId: `RPT-${Date.now()}`, generatedAt: new Date().toISOString(), caseNumber: reportType === "case" ? caseNumber.trim() : null, totalEvidence: items.length, totalSize, byCategory, totalCases: reportType === "full" ? [...new Set(items.map(e => e.caseNumber))].length : undefined, evidence: items });
-  //     setLoading(false);
-  //     toast("Report generated successfully");
-  //   }, 900);
-  // };
-
-  // const items = report?.evidence || [];
-
-
 
   const fetchReport = async () => {
     if (reportType === 'case' && !caseNumber.trim()) return toast('Please enter a case number', 'error');

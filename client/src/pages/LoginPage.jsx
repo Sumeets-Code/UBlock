@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthProvider.jsx';
 import { useToast } from '../context/ToastProvider.jsx';
 import API from '../utils/api.js';
-import { MOCK_USER } from '../utils/mockData.js';
 
 function LoginPage({ goRegister }) {
   const [form, setForm] = useState({ email: '', password: '' });
@@ -14,16 +13,7 @@ function LoginPage({ goRegister }) {
     e.preventDefault();
     setLoading(true);
     
-    // // testing Phase:
-    // setTimeout(() => {
-    //   if (form.email && form.password) { login(MOCK_USER); toast(`Welcome back, ${MOCK_USER.name}`); }
-    //   else { toast("Invalid credentials", "error"); setLoading(false); }
-    // }, 800);
-
-    // Execution:
     try {
-      // POST /api/auth/login  →  { token, user }
-      // const { data } = await API.post('/auth/login', form);
       const { data } = await API.post('/auth/login', form);
       login(data.token, data.user);
       toast(`Welcome back, ${data.user.name}`);

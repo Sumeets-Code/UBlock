@@ -78,23 +78,16 @@ const createEvidence = async (req) => {
 
     // Save to database
     const savedEvidence = await Evidence.create(evidenceData);
+    
+    // ── Step 3: Register on blockchain (best-effort) ───────────────────────────
+    _registerOnChainAsync(savedEvidence, cid, ipfsHash, file.mimetype);
 
-    // // ── Step 3: Register on blockchain (best-effort) ───────────────────────────
-    // // We don't block the response on blockchain confirmation.
-    // // The evidenceId is written back to Mongo asynchronously.
-    // registerOnChain(savedEvidence, cid, ipfsHash, file.mimetype).catch((err) =>
-    //   console.error(
-    //     `Blockchain registration failed for ${savedEvidence._id}:`,
-    //     err.message,
-    //   ),
-    // );
 
     // ── Step 4: Delete local temp file ────────────────────────────────────────
     try {
       fs.unlinkSync(file.path);
     } catch {}
-
-    _registerOnChainAsync(savedEvidence, cid, ipfsHash, file.mimetype);
+    
 
     return savedEvidence;
   } catch (error) {
@@ -129,39 +122,6 @@ const _registerOnChainAsync = (savedEvidence, cid, ipfsHash32, mimeType) => {
       ),
     );
 };
-
-
-
-
-
-
-
-// const registerOnChain = async (savedEvidence, cid, ipfsHash32, mimeType) => {
-//   const { evidenceId, txHash } = await blockchainService.registerEvidence(
-//     ipfsHash32,
-//     savedEvidence._id.toString(),
-//     mimeType,
-//   );
-
-//   await Evidence.findByIdAndUpdate(savedEvidence._id, {
-//     onChainId: evidenceId,
-//     registrationTxHash: txHash,
-//     chainOfCustody: [
-//       ...savedEvidence.chainOfCustody,
-//       {
-//         action: "Registered on Blockchain",
-//         officer: "System",
-//         notes: `onChainId: ${evidenceId} | tx: ${txHash}`,
-//       },
-//     ],
-//   });
-
-//   console.log(
-//     `✅ MongoDB updated with onChainId=${evidenceId} for ${savedEvidence._id}`,
-//   );
-// };
-
-
 
 
 const findEvidenceById = async (evidenceId) => {
@@ -274,7 +234,7 @@ const fetchCustodyAuditLog = async (evidenceId) => {
   try {
     const evidence = await findEvidenceById(evidenceId);
       
-      // Fall back to MongoDB chain of custody if not yet on-chain
+    // Fall back to MongoDB chain of custody if not yet on-chain
     if (!evidence.onChainId) {
       return { source: "mongodb", events: evidence.chainOfCustody };
     }
@@ -350,16 +310,6 @@ const fetchFullReport = async () => {
 };
 
 
-/**
- * prepareUpload
- *
- * Step 1 of the user-pays-gas flow.
- *  1. Upload file to IPFS via Pinata/local node
- *  2. Save a PENDING evidence record to MongoDB
- *  3. Delete the local temp file
- *  4. Return { mongoId, ipfsHash32, cid, mimeType } to the frontend
- *     so the browser can call the contract directly via MetaMask
-*/
 const prepareUpload = async (req) => {
   try {
     const { body, file, user } = req;
@@ -451,12 +401,6 @@ const prepareUpload = async (req) => {
 };
 
 
-/**
- * confirmUpload
- *
- * Step 2 — called by the frontend after MetaMask confirms the tx.
- * Finalises the MongoDB record with the on-chain evidenceId and txHash.
- */
 const confirmUpload = async ({
   mongoId,
   evidenceId,
@@ -470,9 +414,7 @@ const confirmUpload = async ({
         { status: 400 },
       );
     }
-    
-    
-    
+        
     const existing = await Evidence.findById(mongoId);
     if (!existing) {
       throw Object.assign(new Error(`Evidence record ${mongoId} not found`), {
@@ -480,7 +422,7 @@ const confirmUpload = async ({
       });
     }
 
-      // ✅ FIX: Idempotency guard — if already confirmed, return current record as-is
+      // Idempotency guard — if already confirmed, return current record as-is
       if (existing.onChainId != null) {
         console.log(
           `confirmUpload: ${mongoId} already confirmed (onChainId=${existing.onChainId})`,
@@ -500,32 +442,6 @@ const confirmUpload = async ({
 
       return existing.save();
 
-    // const updated = await Evidence.findByIdAndUpdate(
-    //   mongoId,
-    //   {
-    //     status: "active", // promote from pending
-    //     onChainId: evidenceId,
-    //     registrationTxHash: txHash,
-    //     uploaderAddress: walletAddress || null,
-    //     $push: {
-    //       chainOfCustody: {
-    //         action: "Registered on Blockchain",
-    //         officer: "User Wallet",
-    //         notes: `onChainId: ${evidenceId} | tx: ${txHash} | wallet: ${walletAddress || "unknown"}`,
-    //       },
-    //     },
-    //   },
-    //   { new: true },
-    // );
-
-    // if (!updated) {
-    //   throw Object.assign(new Error(`Evidence record ${mongoId} not found`), {
-    //     status: 404,
-    //   });
-    // }
-
-    // return updated;
-    
   } catch (error) {
     console.error(`confirmUpload Error: ${error.message}`)
   }

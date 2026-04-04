@@ -1,15 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 
-/**
- * WalletProvider
- *
- * Manages MetaMask connection state globally.
- * Exposes: { account, chainId, isConnected, isConnecting, connect, disconnect, switchToSepolia }
- *
- * The wallet is optional — users who don't have MetaMask can still use the app;
- * the backend operator wallet will pay for their blockchain registration instead.
- */
-
 const SEPOLIA_CHAIN_ID = '0xaa36a7'; // 11155111 in hex
 
 const WalletCtx = createContext(null);

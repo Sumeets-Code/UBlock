@@ -6,13 +6,11 @@ import { Interface, JsonRpcProvider } from 'ethers';
 const CONTRACT_ADDRESS = () => import.meta.env.VITE_CONTRACT_ADDRESS;
 
 
-
 // Minimal ABI — only the one function we call from the browser
 const IFACE = new Interface([
   'function registerEvidenceByUser(bytes32 ipfsHash, string mongoId, string fileType) returns (uint256)',
   'event EvidenceRegistered(uint256 indexed evidenceId, bytes32 indexed ipfsHash, address indexed uploadedBy, string mongoId, string fileType, uint64 timestamp)',
 ]);
-
 
 
 // ── Get EIP-1559 fee params (minimises cost vs legacy gasPrice) ───────────────
@@ -44,45 +42,7 @@ const getEIP1559Fees = async () => {
 };
 
 
-// // ── Function selector ────────────────────────────────────────────────────────
-// // keccak256("registerEvidenceByUser(bytes32,string,string)") → first 4 bytes
-// // Computed offline; verify with:
-// //   node -e "const {ethers}=require('ethers'); console.log(ethers.id('registerEvidenceByUser(bytes32,string,string)').slice(0,10))"
-// const SELECTOR = "fef62a85";
-
-// // ── ABI-encode a single UTF-8 string to ABI dynamic format ───────────────────
-// const encodeAbiString = (str) => {
-//   const bytes = new TextEncoder().encode(str);
-//   const lenHex = bytes.length.toString(16).padStart(64, "0");
-//   const dataHex = Array.from(bytes, (b) =>
-//     b.toString(16).padStart(2, "0"),
-//   ).join("");
-//   // Pad to a multiple of 32 bytes (64 hex chars)
-//   const padded = dataHex.padEnd(Math.ceil(dataHex.length / 64) * 64, "0");
-//   return lenHex + padded;
-// };
-
-// // ── Full calldata encoder ─────────────────────────────────────────────────────
-// const encodeCalldata = (ipfsHash32, mongoId, fileType) => {
-//   // Static: bytes32 (32 bytes) + offset_mongoId (32) + offset_fileType (32) = 96 bytes static
-//   const hash = ipfsHash32.replace(/^0x/i, "").padStart(64, "0");
-
-//   const enc1 = encodeAbiString(mongoId);
-//   const enc2 = encodeAbiString(fileType);
-
-//   // Offsets are measured from the start of the dynamic section (after the 3 static words)
-//   // offset of mongoId  = 96 (3 × 32)
-//   // offset of fileType = 96 + 32 + (enc1.length / 2)
-//   const off1 = (96).toString(16).padStart(64, "0");
-//   const off2 = (96 + 32 + enc1.length / 2).toString(16).padStart(64, "0");
-
-//   return SELECTOR + hash + off1 + off2 + enc1 + enc2;
-// };
-
 // ── Parse evidenceId from receipt logs ───────────────────────────────────────
-// We find the first log emitted BY our contract and read topic[1] as uint256.
-// topic[0] = event signature hash
-// topic[1] = first indexed param = evidenceId (uint256)
 const parseEvidenceId = (receipt, contractAddress) => {
   const addr = (contractAddress || "").toLowerCase();
   for (const log of receipt.logs || []) {
@@ -105,20 +65,6 @@ const waitForReceipt = async (txHash, maxAttempts = 90) => {
   }
   throw new Error("Transaction not confirmed after 3 minutes");
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
