@@ -4,8 +4,14 @@ import reportsController from '../controller/reports.controller.js';
 
 const router = express.Router();
 
-router.get('/case/:id', authenticate, reportsController.getCaseReport);
+// ── Generate (live, unsaved) ──────────────────────────────────────────────────
+router.get('/generate/case/:caseNumber', authenticate, reportsController.generateCase);
+router.get('/generate/full',             authenticate, reportsController.generateFull);
 
-router.get('/full', authenticate, reportsController.getFullReport);
+// ── Save / list / get / delete saved reports ──────────────────────────────────
+router.post('/saved',      authenticate, reportsController.save);
+router.get('/saved',       authenticate, reportsController.listSaved);
+router.get('/saved/:id',   authenticate, reportsController.getSaved);
+router.delete('/saved/:id',authenticate, reportsController.deleteSaved);
 
 export default router;
