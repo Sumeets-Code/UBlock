@@ -138,6 +138,28 @@ const sanitizeUser = (user) => {
   }
 };
 
+// Mark user as face-enrolled and store how many samples are saved
+const updateFaceEnrollment = async (userId, encodingsCount) => {
+  await User.findByIdAndUpdate(userId, {
+    faceEnrolled:  true,
+    faceEncodings: encodingsCount,
+  });
+};
+
+// Record the timestamp of a successful face login
+const recordFaceLogin = async (userId) => {
+  await User.findByIdAndUpdate(userId, { lastFaceLoginAt: new Date() });
+};
+
+// Clear all face data from MongoDB (called after deleting from Python service)
+const clearFaceEnrollment = async (userId) => {
+  await User.findByIdAndUpdate(userId, {
+    faceEnrolled:    false,
+    faceEncodings:   0,
+    lastFaceLoginAt: null,
+  });
+};
+
 export default {
   createUser,
   updateUserProfile,
@@ -145,4 +167,7 @@ export default {
   getProfileByToken,
   findUserByEmail,
   sanitizeUser,
+  updateFaceEnrollment,
+  recordFaceLogin,
+  clearFaceEnrollment
 };
