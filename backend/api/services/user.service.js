@@ -27,8 +27,6 @@ const createUser = async (userData) => {
 
     const user = await User.create(data);
 
-    // await sendEmail(data.email, `Welcome! ${data.username}`, `Thank you for registering with UBLock!!`);
-
     return user;
   } catch (err) {
     console.error(`User Creation error: ${err.message}`);
@@ -105,7 +103,7 @@ const updateUserProfile = async (req) => {
         data: fs.readFileSync(req.file.path),
         contentType: req.file.mimetype,
       };
-      // Clean up the temp file after reading it
+
       try {
         fs.unlinkSync(req.file.path);
       } catch {}
@@ -140,6 +138,28 @@ const sanitizeUser = (user) => {
   }
 };
 
+// Mark user as face-enrolled and store how many samples are saved
+const updateFaceEnrollment = async (userId, encodingsCount) => {
+  await User.findByIdAndUpdate(userId, {
+    faceEnrolled:  true,
+    faceEncodings: encodingsCount,
+  });
+};
+
+// Record the timestamp of a successful face login
+const recordFaceLogin = async (userId) => {
+  await User.findByIdAndUpdate(userId, { lastFaceLoginAt: new Date() });
+};
+
+// Clear all face data from MongoDB (called after deleting from Python service)
+const clearFaceEnrollment = async (userId) => {
+  await User.findByIdAndUpdate(userId, {
+    faceEnrolled:    false,
+    faceEncodings:   0,
+    lastFaceLoginAt: null,
+  });
+};
+
 export default {
   createUser,
   updateUserProfile,
@@ -147,4 +167,7 @@ export default {
   getProfileByToken,
   findUserByEmail,
   sanitizeUser,
+  updateFaceEnrollment,
+  recordFaceLogin,
+  clearFaceEnrollment
 };

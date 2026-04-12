@@ -8,11 +8,14 @@ const userLoginSchema = new mongoose.Schema(
     role: { type: String, required: true, enum: ['viewer', 'investigator', 'admin'], default: 'investigator' },
     department: { type: String, required: true },
     badgeNumber: { type: String, required: true },
+    contact: { type: String, default: '' },
     profilePhoto: {
       data: Buffer, // The actual image data
       contentType: String, // e.g. 'image/jpeg'
     },
-    contact: { type: String },
+    faceEnrolled:      { type: Boolean, default: false },
+    lastFaceLoginAt:   { type: Date,    default: null  },
+    faceEncodings:     { type: Number,  default: 0     },
   },
   { timestamps: true },
 );

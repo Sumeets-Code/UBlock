@@ -1,38 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { useToast } from '../context/ToastProvider.jsx';
+import { useAuth } from '../context/AuthProvider.jsx';
 import { fmt, formatFileSize, getCategoryIcon } from '../utils/api.js';
 import API from '../utils/api.js';
-import { MOCK_EVIDENCE } from '../utils/mockData.js';
 
 
 function EvidenceDetailPage({ id, setPage }) {
+  const { user } = useAuth();
   const [evidence, setEvidence] = useState(null);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState('overview');
   const [showStatusModal, setShowStatusModal] = useState(false);
-  const [statusUpdate, setStatusUpdate] = useState({ status: '', notes: '', officer: '' });
   const toast = useToast();
-
-
-
-
-  // useEffect(() => {
-  //   const e = MOCK_EVIDENCE.find(x => x._id === id);
-  //   if (e) { setEvidence({ ...e }); setStatusUpdate(s => ({ ...s, status: e.status })); }
-  // }, [id]);
-
-  // const handleStatusUpdate = () => {
-  //   if (!statusUpdate.officer) return toast("Officer name required", "error");
-  //   setEvidence(ev => ({
-  //     ...ev, status: statusUpdate.status,
-  //     chainOfCustody: [...(ev.chainOfCustody || []), { action: `Status changed to ${statusUpdate.status}`, officer: statusUpdate.officer, timestamp: new Date().toISOString(), notes: statusUpdate.notes }]
-  //   }));
-  //   setShowStatusModal(false);
-  //   toast("Status updated and logged");
-  // };
-
-  // if (!evidence) return <div className="loading"><div className="spinner" /></div>;
-
+  const [statusUpdate, setStatusUpdate] = useState({ 
+    status: '', 
+    notes: '', 
+    officer: user?.name || '', 
+  });
+  
 
   useEffect(() => {
     // GET /api/evidence/:id  →  single evidence object with chainOfCustody
@@ -181,7 +166,7 @@ function EvidenceDetailPage({ id, setPage }) {
               </div>
               <div className="form-group">
                 <label className="form-label">Officer Name *</label>
-                <input className="form-control" placeholder="Your name" value={statusUpdate.officer} onChange={e => setStatusUpdate({ ...statusUpdate, officer: e.target.value })} />
+                <input className="form-control" placeholder="Your name" value={statusUpdate.officer} onChange={e => setStatusUpdate({ ...statusUpdate, officer: e.target.value })} readOnly/>
               </div>
               <div className="form-group">
                 <label className="form-label">Notes</label>
