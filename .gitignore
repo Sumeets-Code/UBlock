@@ -139,12 +139,26 @@ face-service/data/faces/*.pkl
 
 face-service/app/_pycache_/
 
+face-service-test/
+
 # yarn v2
 .yarn/cache
 .yarn/unplugged
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # Byte-compiled / optimized / DLL files

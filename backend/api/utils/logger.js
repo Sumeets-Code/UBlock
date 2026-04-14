@@ -1,5 +1,14 @@
 import winston from 'winston';
 import 'winston-daily-rotate-file';
+import { Logtail }       from '@logtail/node';
+import { LogtailTransport } from '@logtail/winston';
+
+const logtail = new Logtail(process.env.LOGTAIL_SOURCE_TOKEN);
+
+// Add this transport in production
+if (process.env.NODE_ENV === 'production') {
+  logger.add(new LogtailTransport(logtail));
+}
 
 const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'info', // Dynamic level via env variable
