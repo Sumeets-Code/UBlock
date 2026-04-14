@@ -54,7 +54,7 @@ function LoginPage({ goRegister }) {
   // ─────────────────────────────────────────────────────────────────────────
   return (
     <div className="auth-page">
-      <div className="auth-card" style={{ maxWidth: showCam ? 400 : 480 }}>
+      <div className="auth-card" style={{ maxWidth: showCam ? 480 : 480 }}>
 
         {/* Logo */}
         <div className="auth-logo">

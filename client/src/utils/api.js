@@ -1,7 +1,11 @@
 import axios from 'axios';
 
 // Axios instance pointing at your Express backend
-const API = axios.create({ baseURL: '/api' });
+const API =  axios.create({
+  baseURL: import.meta.env.VITE_API_URL
+    ? `${import.meta.env.VITE_API_URL}`   // production: full URL
+    : '/api',                              // dev: use Vite proxy
+});
 
 // Attach JWT token to every request automatically
 API.interceptors.request.use(config => {
