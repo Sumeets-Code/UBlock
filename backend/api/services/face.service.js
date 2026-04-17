@@ -6,7 +6,7 @@ const BASE_URL = (
 ).replace(/\/$/, "");
 const SERVICE_SECRET =
   process.env.FACE_SERVICE_SECRET || "CHANGE_ME_IN_PRODUCTION";
-const TIMEOUT_MS = 20_000; // 20 s — model inference can be slow on first call
+const TIMEOUT_MS = 120_000; // 120 s — model inference can be slow on first call
 
 if (!process.env.FACE_SERVICE_SECRET) {
   console.warn(
