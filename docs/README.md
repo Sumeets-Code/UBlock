@@ -178,7 +178,7 @@ UBlock/
 ### 1. Clone and install
 
 ```bash
-git clone https://github.com/yourusername/ublock.git
+git clone https://github.com/Sumeets-Code/UBlock.git
 cd ublock
 
 # Backend
